@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingtrustcloud.familytree.mapper.MemberBasicInfoMapper">
+
+    <select id="getMembersByFamilyBranchId" resultType="com.kingtrustcloud.familytree.vo.MemberVO">
+        SELECT DISTINCT
+        fmm.mate_id mateId,
+        fmm.member_id memberId,
+        fmm.parent_member_id parentMemberId,
+        mbi.user_name userName,
+        IFNULL( mbi.head_thumb, wu.head_image_url ) headThumb,
+        mbi.gender_id genderId,
+        mbi.is_dead isDead,
+        fmm.family_branch_id familyBranchId,
+        fmm.family_basic_id familyBasicId,
+        fmm.family_id familyId
+        FROM
+        member_basic_info mbi
+        INNER JOIN family_member_mapping fmm ON mbi.member_id = fmm.member_id
+        AND fmm.status_id = 1
+        AND fmm.is_delete = 0
+        LEFT JOIN weixin_user wu ON mbi.member_id = wu.member_id and wu.is_delete=0
+        WHERE
+        fmm.family_branch_id = #{familyBranchId} and mbi.is_delete=0
+    </select>
+
+    <select id="listFamilyBranchByMemberId" resultType="com.kingtrustcloud.familytree.entity.FamilyBranch">
+        select fb.family_branch_id familyBranchId,fb.branch_name branchName,fb.description
+        from family_branch fb left join family_member_mapping fmm on fb.family_branch_id=fmm.family_branch_id and fmm.is_delete=0
+        where fmm.member_id=#{memberId} and fb.is_delete=0
+    </select>
+
+</mapper>

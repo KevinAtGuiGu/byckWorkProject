@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 编辑地址页面 -->
+<div th:fragment="tpl_mineSite">
+        <div class="page">
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell weui-cell_active">
+                    <div class="weui-cell__bd">
+                        <textarea class="weui-textarea site" placeholder="请输入详细地址" rows="3"></textarea>
+                    </div>
+                    <!--<div class="weui-cell__bd">-->
+                        <!--&lt;!&ndash;<textarea class="weui-textarea" placeholder="请输入别名" rows="1"></textarea>&ndash;&gt;-->
+                        <!--<input   class="weui-input site" placeholder="请输入详细地址" type="text" />-->
+                    <!--</div>-->
+                    <div class="weui-cell__ft xinmin " style="display: none;">
+                        <button class="weui-btn_reset weui-btn_icon">
+                            <i id="biemin" class="iconfont icon-icon-cross-empty"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="btn-m weui-cell frame" >
+                    <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="showTooltips">确定</a>
+                </div>
+            </div>
+            <div id="toast" style="display: none;">
+                <div class="weui-mask_transparent"></div>
+                <div class="weui-toast">
+                    <!--<i class="weui-icon-success-no-circle weui-icon_toast"></i>-->
+                    <!--<p class="weui-toast__content">姓名不能为空</p>-->
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+
+                //这个是Js
+                $(function(){
+                    //这个是Js
+                    var isshowbtn = false
+                    var $toast = $("#toast")
+                    var $weuitoast = $(".weui-toast"),
+                        address = personal_data.address == null ? "" : personal_data.address
+                    $('.site').val(address)
+
+                    function popup(content){
+                        $weuitoast.html(content)
+                        $toast.fadeIn(100);
+                        setTimeout(function () {
+                            $toast.fadeOut(100);
+                        }, 2000);
+                    }
+                    if($('.site').val()){
+                        $('#showTooltips').removeClass('weui-btn_disabled');
+                        $('.xinmin').show();
+                        isshowbtn = true
+                    }
+                    //改变按钮
+                    $('.site').on('input', function () {
+                        if ($('.site').val()) {
+                            $('#showTooltips').removeClass('weui-btn_disabled');
+                            $('.xinmin').show();
+                            isshowbtn = true
+                        } else {
+                            $('#showTooltips').addClass('weui-btn_disabled');
+                            $('.xinmin').hide();
+                            isshowbtn = false
+                        }
+                    });
+                    $('#biemin').on('click',function () {
+                        $('.site').val('');
+                        $('.xinmin').hide();
+                        $('#showTooltips').addClass('weui-btn_disabled');
+                        isshowbtn = false
+                    })
+                    $('#showTooltips').on('click',function () {
+                        if ( !isshowbtn)  return
+                        var address = $('.site').val()
+                        if (address == "") {
+                            var content = `<p class="weui-toast__content">详细地址不能为空</p>`
+                            popup(content)
+                        }else{
+                            var content = `<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">修改成功</p>`
+                            ajaxPost(
+                                {
+                                    type: "POST",
+                                    url: "modifyMyInfo",
+                                    data: {memberId: personal_data.memberId, address: address},
+                                    success: function (data) {
+                                        if (data.statusCode == 200) {
+                                            console.log(data.statusCode )
+                                            popup(content)
+                                            personal_data.address = address
+                                            setTimeout(function(){
+                                                $('#mineSite .weui-cell__ft').text(address)
+                                                history.go(-1)
+                                            }, 1500);
+                                        } else {
+                                            weui.topTips(data.message, 3000);
+                                        }
+                                    }
+                                });
+
+
+
+                        }
+                    })
+                });
+
+    </script>
+</div>
+</body>
+</html>

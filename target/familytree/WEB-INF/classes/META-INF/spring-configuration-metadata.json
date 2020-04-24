@@ -1,0 +1,201 @@
+{
+  "groups": [
+    {
+      "name": "familytree.swagger",
+      "type": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties"
+    },
+    {
+      "name": "familytree.swagger.basic",
+      "type": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties$Basic",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "sourceMethod": "getBasic()"
+    },
+    {
+      "name": "familytree.swagger.contact",
+      "type": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties$Contact",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "sourceMethod": "getContact()"
+    },
+    {
+      "name": "familytree.swagger.markdown",
+      "type": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties$Markdown",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "sourceMethod": "getMarkdown()"
+    },
+    {
+      "name": "sms.tencent",
+      "type": "com.kingtrustcloud.familytree.config.SmsProperties",
+      "sourceType": "com.kingtrustcloud.familytree.config.SmsProperties"
+    },
+    {
+      "name": "wx.mp",
+      "type": "com.kingtrustcloud.familytree.config.MpProperties",
+      "sourceType": "com.kingtrustcloud.familytree.config.MpProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "familytree.swagger.base-package",
+      "type": "java.lang.String",
+      "description": "swagger会解析的包路径",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": "com.kingtrustcloud.familytree"
+    },
+    {
+      "name": "familytree.swagger.base-path",
+      "type": "java.util.List<java.lang.String>",
+      "description": "swagger会解析的url规则",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties"
+    },
+    {
+      "name": "familytree.swagger.description",
+      "type": "java.lang.String",
+      "description": "描述",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": "familytree 在线文档"
+    },
+    {
+      "name": "familytree.swagger.docket",
+      "type": "java.util.Map<java.lang.String,com.kingtrustcloud.familytree.swagger2.SwaggerProperties.DocketInfo>",
+      "description": "分组文档",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties"
+    },
+    {
+      "name": "familytree.swagger.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启swagger",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "familytree.swagger.exclude-path",
+      "type": "java.util.List<java.lang.String>",
+      "description": "在basePath基础上需要排除的url规则",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties"
+    },
+    {
+      "name": "familytree.swagger.global-operation-parameters",
+      "type": "java.util.List<com.kingtrustcloud.familytree.swagger2.SwaggerProperties.GlobalOperationParameter>",
+      "description": "全局参数配置",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties"
+    },
+    {
+      "name": "familytree.swagger.group",
+      "type": "java.lang.String",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "familytree.swagger.host",
+      "type": "java.lang.String",
+      "description": "host信息",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "familytree.swagger.license",
+      "type": "java.lang.String",
+      "description": "许可证",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "familytree.swagger.license-url",
+      "type": "java.lang.String",
+      "description": "许可证URL",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "familytree.swagger.order",
+      "type": "java.lang.Integer",
+      "description": "排序",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": 1
+    },
+    {
+      "name": "familytree.swagger.production",
+      "type": "java.lang.Boolean",
+      "description": "是否生产环境",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "familytree.swagger.terms-of-service-url",
+      "type": "java.lang.String",
+      "description": "服务条款URL",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "familytree.swagger.title",
+      "type": "java.lang.String",
+      "description": "标题",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": "在线文档"
+    },
+    {
+      "name": "familytree.swagger.version",
+      "type": "java.lang.String",
+      "description": "版本",
+      "sourceType": "com.kingtrustcloud.familytree.swagger2.SwaggerProperties",
+      "defaultValue": "1.0"
+    },
+    {
+      "name": "sms.tencent.appid",
+      "type": "java.lang.String",
+      "sourceType": "com.kingtrustcloud.familytree.config.SmsProperties"
+    },
+    {
+      "name": "sms.tencent.appkey",
+      "type": "java.lang.String",
+      "sourceType": "com.kingtrustcloud.familytree.config.SmsProperties"
+    },
+    {
+      "name": "sms.tencent.secretid",
+      "type": "java.lang.String",
+      "sourceType": "com.kingtrustcloud.familytree.config.SmsProperties"
+    },
+    {
+      "name": "sms.tencent.secretkey",
+      "type": "java.lang.String",
+      "sourceType": "com.kingtrustcloud.familytree.config.SmsProperties"
+    },
+    {
+      "name": "sms.tencent.sign",
+      "type": "java.lang.String",
+      "sourceType": "com.kingtrustcloud.familytree.config.SmsProperties"
+    },
+    {
+      "name": "sms.tencent.templateid",
+      "type": "java.lang.String",
+      "sourceType": "com.kingtrustcloud.familytree.config.SmsProperties"
+    },
+    {
+      "name": "wx.mp.aes-key",
+      "type": "java.lang.String",
+      "description": "设置微信公众号的EncodingAESKey",
+      "sourceType": "com.kingtrustcloud.familytree.config.MpProperties"
+    },
+    {
+      "name": "wx.mp.app-id",
+      "type": "java.lang.String",
+      "description": "设置微信公众号的appid",
+      "sourceType": "com.kingtrustcloud.familytree.config.MpProperties"
+    },
+    {
+      "name": "wx.mp.secret",
+      "type": "java.lang.String",
+      "description": "设置微信公众号的app secret",
+      "sourceType": "com.kingtrustcloud.familytree.config.MpProperties"
+    },
+    {
+      "name": "wx.mp.token",
+      "type": "java.lang.String",
+      "description": "设置微信公众号的token",
+      "sourceType": "com.kingtrustcloud.familytree.config.MpProperties"
+    }
+  ],
+  "hints": []
+}

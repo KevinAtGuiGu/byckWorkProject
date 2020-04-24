@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base th:href="${#request.getContextPath()}+'/'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>紫荆堂-田氏族谱</title>
+    <link rel="stylesheet" href="assets/css/weui.min.css" />
+    <link rel="stylesheet" href="assets/css/example.css" />
+    <link rel="stylesheet" href="font/iconfont.css">
+    <link rel="stylesheet" href="assets/css/lst-style.css" />
+    <link type="text/css" rel="stylesheet" href="assets/css/jsmind.css" />
+</head>
+<body ontouchstart>
+<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
+<div class="container" id="container"></div>
+<!-- 开始我的页面 -->
+<script type="text/html" id="tpl_home" th:include="my/my::tpl_home"></script>
+<!-- 我的页面END -->
+
+<!-- 开始个人信息页面 -->
+<script type="text/html" id="tpl_mineList" th:include="my/myInfo::tpl_mineList"></script>
+<!-- 开始个人信息页面END -->
+
+<!-- 编辑个人姓名页面 -->
+<script type="text/html" id="tpl_mineEdit" th:include="my/mineEdit::tpl_mineEdit"></script>
+<!-- 编辑个人姓名页面END -->
+
+<!-- 编辑别名页面 -->
+<script type="text/html" id="tpl_mineAlias" th:include="my/mineAlias::tpl_mineAlias"></script>
+<!-- 编辑别名页面END -->
+
+<!-- 编辑地址页面 -->
+<script type="text/html" id="tpl_mineSite" th:include="my/mineSite::tpl_mineSite"></script>
+<!-- 编辑地址页面END -->
+
+<!-- 验证手机号页面 -->
+<script type="text/html" id="tpl_minephone" th:include="my/minephone::tpl_minephone"></script>
+<!-- 验证手机号页面END -->
+
+<!-- 验证身份证页面 -->
+<script type="text/html" id="tpl_mineCard" th:include="my/mineCard::tpl_mineCard"></script>
+<!-- 验证身份证页面END -->
+
+<!-- 开始公告页面 -->
+<script type="text/html" id="tpl_mineAnnouncement" th:include="my/mineAnnouncement::tpl_mineAnnouncement"></script>
+<!-- 开始公告页面END -->
+
+<!-- 开始管理员页面 -->
+<script type="text/html" id="tpl_admin" th:include="my/admin::tpl_admin"></script>
+<!-- 开始管理员页面END -->
+
+<!-- 开始世袭设置页面 -->
+<script type="text/html" id="tpl_hereditary" th:include="my/hereditary::tpl_hereditary"></script>
+<!-- 开始世袭设置页面END -->
+
+<!-- 开始分支管理页面 -->
+<script type="text/html" id="tpl_branch" th:include="my/branch::tpl_branch"></script>
+<!-- 开始分支管理页面END -->
+<!-- 开始新增分支管理页面 -->
+<script type="text/html" id="tpl_addFamilyBranch" th:include="my/addFamilyBranch::tpl_addFamilyBranch"></script>
+<!-- 开始新增管理页面END -->
+<!-- 开始新增分支管理页面 -->
+<script type="text/html" id="tpl_selectBranchAdmin" th:include="my/selectBranchAdmin::tpl_selectBranchAdmin"></script>
+<!-- 开始新增管理页面END -->
+
+<!-- 开始我的审批页面 -->
+<script type="text/html" id="tpl_Approval" th:include="my/Approval::tpl_Approval"></script>
+<!-- 开始我的审批页面END -->
+
+<!-- 开始合并分支页面 -->
+<script type="text/html" id="tpl_merge" th:include="my/merge::tpl_merge"></script>
+<!-- 开始合并分支页面END -->
+
+<!-- 开始帮助/关于/设置页面 -->
+<script type="text/html" id="tpl_article" th:include="my/article::tpl_article"></script>
+<!-- 开始帮助/关于/设置页面END -->
+
+<!-- 设置分支树页面 -->
+<script type="text/html" id="tpl_tree" th:include="home/familytree::tpl_tree"></script>
+<!-- 开设置分支树页面END -->
+
+<!-- 开始资料页面 -->
+<script type="text/html" id="tpl_form" th:include="home/form::tpl_form"></script>
+<!-- 资料页面 -->
+
+<script src="assets/js/zepto.min.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="assets/js/weui.min.js"></script>
+<script src="assets/js/example.js"></script>
+<script src="assets/js/familytree.js"></script>
+<script src="assets/js/city.js"></script>
+<script type="text/javascript" src="assets/js/jsmind.js"></script>
+<!--<script src="assets/js/jquery-2.1.4.js"></script>-->
+<!--<script src="assets/js/fastclick.js"></script>-->
+<script src="assets/js/jquery-weui.js"></script>
+</body>
+</html>
+

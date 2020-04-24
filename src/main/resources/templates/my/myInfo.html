@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <div th:fragment="tpl_mineList">
+    <div class="page">
+            <div class="weui-cells" id="info">
+                <!--<a class="weui-cell" href="javascript:">-->
+                    <!--<div class="weui-cell__bd">-->
+                        <!--<p>头像</p>-->
+                    <!--</div>-->
+                    <!--<div class="weui-cell__ft" id="headportrait">-->
+                        <!--<img  th:if="${session.user.memberBasicInfoEntity.headThumb}" class="profilepicture"  th:src="${session.user.memberBasicInfoEntity.headThumb}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" style="width: 50px;display: block;height:auto;height: 50px"/>-->
+                        <!--<div class="isimg "   th:if="${ session.user.memberBasicInfoEntity.headThumb != ''}">-->
+                            <!--暂无头像</div>-->
+                    <!--</div>-->
+                    <!--<div class="weui-cell__ft " style="margin-left: 12px;width: 10px;" id="headImageUrl">-->
+                        <!--<button class="weui-btn_reset weui-btn_icon" >-->
+                            <!--<i id="mima" class="iconfont icon-icon-cross-empty">-->
+                            <!--</i>-->
+                            <!--<input name="uploaderInput" id="uploaderInput"  style="top: 33px;left: 350px;width: 16px;height: 16px;" class="weui-uploader__input" type="file" accept="image/*">-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</a>-->
+            </div>
+            <div class="weui-cells" id="info2">
+
+            </div>
+                <div class="weui-gallery" id="gallery">
+                    <span class="weui-gallery__img" id="galleryImg"></span>
+                    <div class="weui-gallery__opr">
+                        <a href="javascript:" class="weui-gallery__del" style="color: #fff">
+                            <!--<i class="weui-icon-delete weui-icon_gallery-delete"></i>-->
+                            更换头像
+                        </a>
+                    </div>
+                </div>
+        </div>
+        <script type="text/javascript">
+            var city_picker_ids = [];
+
+            $(function(){
+                    console.log(personal_data,"有值")
+                var loading1 = weui.loading("加载中..");
+                // ajaxPost(
+                //     {
+                //         type: "GET",
+                //         url: "getMyInfo",
+                //         success: function (data) {
+                            loading1.hide();
+                           // console.log(data)
+                            // if (data.statusCode == 200) {
+                                city_picker_ids.push(personal_data.provinceId)
+                                city_picker_ids.push(personal_data.cityId)
+                                city_picker_ids.push(personal_data.districtId)
+                                var provinceId = ""
+                                var cityId = ""
+                                var  districtId = ''
+                                for (var i=0;i<CHINA_CITY.length;i++){
+                                    if(CHINA_CITY[i].value == personal_data.provinceId){
+                                        provinceId = CHINA_CITY[i].label
+                                        for (var j=0;j < CHINA_CITY[i].children.length;j++){
+                                            if(CHINA_CITY[i].children[j].value == personal_data.cityId){
+                                                cityId=  CHINA_CITY[i].children[j].label
+                                                for (var k=0;k < CHINA_CITY[i].children[j].children.length;k++){
+                                                    if(CHINA_CITY[i].children[j].children[k].value == personal_data.districtId){
+                                                        districtId =  CHINA_CITY[i].children[j].children[k].label
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                var site = provinceId + " "  + cityId+ " " + districtId
+                                console.log(site,"111")
+                                var html = `
+                <a class="weui-cell" href="javascript:">
+                    <div class="weui-cell__bd">
+                        <p>头像</p>
+                    </div>
+                    <div class="weui-cell__ft" id="headportrait">
+                    ${personal_data.headImageUrl?'<img  src="'+personal_data.headImageUrl+'" class="profilepicture picture" />':''}
+                        <div    ${personal_data.headImageUrl? 'class="isshowphotograph"' : 'class="isimg"'}>
+                            暂无头像</div>
+                    </div>
+                    <div class="weui-cell__ft " style="margin-left: 12px;width: 10px;" id="uploader">
+                        <button class="weui-btn_reset weui-btn_icon" >
+                            <i id="mima" class="iconfont icon-jiantouarrow487" style="color: rgba(0,0,0,0.3);">
+                            </i>
+                            <input name="uploaderInput" id="uploaderInput"  style="top: 33px;left: 350px;width: 16px;height: 16px;" class="weui-uploader__input" type="file" accept="image/*">
+                        </button>
+                    </div>
+                </a>
+                <a class="weui-cell weui-cell_access"  id="genealogyname">
+                    <div class="weui-cell__bd">
+                        <p>族谱名</p>
+                    </div>
+                    <div class="weui-cell__ft">${personal_data.familyName == null? '' :personal_data.familyName }</div>
+                </a>
+                <div class="weui-cell" href="javascript:">
+                    <div class="weui-cell__bd">
+                        <p>账号</p>
+                    </div>
+                    <div class="weui-cell__ft">${personal_data.account}</div>
+                </div>
+                <a class="weui-cell  weui-cell_access" id="mineEdit">
+                    <div class="weui-cell__bd">
+                        <p>姓名</p>
+                    </div>
+                    <div class="weui-cell__ft">${personal_data.userName == null? '' : personal_data.userName}</div>
+                </a>
+                <a class="weui-cell  weui-cell_access" id="mineAlias">
+                    <div class="weui-cell__bd">
+                        <p>其他名</p>
+                    </div>
+                    <div class="weui-cell__ft">${personal_data.otherName  == null? '' : personal_data.otherName}</div>
+                </a>
+
+                <a class="weui-cell  weui-cell_access" id="showgender">
+                    <div class="weui-cell__bd" ]>
+                        <p>性别</p>
+                    </div>
+                    <div class="weui-cell__ft">${personal_data.genderId == 0 ? '男' : '女'}</div>
+                </a>`
+
+                 var html2 =`<a class="weui-cell  weui-cell_access"  id="minephone">
+                    <div class="weui-cell__bd">
+                        <p>手机号</p>
+                    </div>
+                    <div class="weui-cell__ft">${personal_data.mobileNo == null? '' : personal_data.mobileNo}</div>
+                </a>
+                <a class="weui-cell  weui-cell_access"  id="mineCard">
+                    <div class="weui-cell__bd">
+                        <p>身份证</p>
+                    </div>
+                    <div class="weui-cell__ft">${personal_data.idCardNo == null? '' : personal_data.idCardNo}</div>
+                </a>
+
+                <a class="weui-cell  weui-cell_access" id="tpl_newUser_city">
+                    <div class="weui-cell__bd">
+                        <p>户籍</p>
+                    </div>
+                    <div class="weui-cell__ft census_register ">${site}</div>
+                </a>
+                <a class="weui-cell  weui-cell_access"  id="mineSite">
+                    <div class="weui-cell__bd">
+                        <p>地址</p>
+                    </div>
+                    <div class="weui-cell__ft"><div style="width:280px; font-size:0.875rem;">${personal_data.address == null? '' : personal_data.address}</div></div>
+                </a>`
+                                $('#info2').html(html2)
+                                $('#info').append(html)
+                                // location.href='home';
+                                $('#mineEdit').on('click',function(){
+                                    window.location.hash = `mineEdit`
+                                })
+                                $('#genealogyname').on('click',function(){
+                                    window.location.hash = `genealogyname`
+                                })
+                                $('#mineAlias').on('click',function(){
+
+                                    window.location.hash = `mineAlias`
+
+                                })
+
+                                $('#minephone').on('click',function(){
+
+                                    window.location.hash = `minephone`
+
+                                })
+                                $('#mineCard').on('click',function(){
+
+                                    window.location.hash = `mineCard`
+
+                                })
+                                $('#mineSite').on('click',function(){
+                                    window.location.hash = `mineSite`
+
+                                })
+                                $('#showgender').on('click', function () {
+                                    weui.picker([{
+                                        label: '男',
+                                        value: 0
+                                    }, {
+                                        label: '女',
+                                        value: 1
+                                    }], {
+                                        onChange: function (result) {
+                                            console.log(result);
+                                        },
+                                        onConfirm: function (result) {
+                                            console.log(result[0].label);
+                                            var gender = result[0].label
+                                            var value =  result[0].value
+                                            if($('#showgender > .weui-cell__ft').text() == gender){
+                                                return
+                                            }else {
+
+                                                ajaxPost(
+                                                    {
+                                                        type: "POST",
+                                                        url: "modifyMyInfo",
+                                                        data: {genderId: value,memberId: personal_data.memberId},
+                                                        success: function (data) {
+                                                            if (data.statusCode == 200) {
+                                                                personal_data.genderId = value
+                                                                $('#showgender > .weui-cell__ft').text(gender)
+                                                            } else {
+                                                                weui.topTips(data.message, 3000);
+                                                            }
+                                                        }
+                                                    });
+                                            }
+
+                                        },
+                                        title: '请选择性别'
+                                    });
+                                });
+                                $('#tpl_newUser_city').on('click', function () {
+                                    weui.picker(CHINA_CITY, {
+                                        title: '地区选择',
+                                        id: 'city-picker',
+                                        depth: 3,
+                                        defaultValue: city_picker_ids,
+
+                                        onChange: function (result) {
+                                        },
+                                        onConfirm: function (result) {
+                                            console.log(result)
+                                            var loading1 = weui.loading("加载中..");
+
+                                            ajaxPost(
+                                                {
+                                                    type: "POST",
+                                                    url: "modifyMyInfo",
+                                                    data: {provinceId: result[0].value,cityId: result[1].value,districtId:result[2].value,memberId: personal_data.memberId},
+                                                    success: function (data) {
+                                                        personal_data.provinceId = result[0].value
+                                                        personal_data.cityId = result[1].value
+                                                        personal_data.districtId = result[2].value
+                                                        loading1.hide();
+                                                        if (data.statusCode == 200) {
+                                                            var value = '';
+                                                            city_picker_ids = [];
+                                                            for (var i = 0; i < result.length; i++) {
+                                                                value = value + ' ' + result[i].label;
+                                                                city_picker_ids.push(value);
+                                                            }
+                                                            $('.census_register').text(value);
+                                                        } else {
+                                                            weui.topTips(data.message, 3000);
+                                                        }
+                                                    }
+                                                });
+
+                                        },
+                                    });
+                                });
+                            // } else {
+                            //     weui.topTips(data.message, 3000);
+                            // }
+                    //     }
+                    // });
+                //原上传头像
+                var $gallery = $("#gallery"),
+                    $galleryImg = $("#galleryImg")
+                // $uploaderFiles.on("click", "li", function(){
+                //     $galleryImg.attr("style", this.getAttribute("style"));
+                //     $gallery.fadeIn(100);
+                // });
+                $gallery.on("click",'.weui-gallery__img',function(){
+                    $gallery.fadeOut(100);
+                    // $("#uploaderInput").trigger('click')
+                });
+                $gallery.on("click",'.weui-gallery__opr',function(){
+                    $gallery.fadeOut(100);
+                    $("#uploaderInput").trigger('click')
+                });
+                    $('.profilepicture').on('click',function () {
+                        var url = `background-image: url('${this.getAttribute("src")}');`
+                        $galleryImg.attr("style", url);
+                            $gallery.fadeIn(100);
+                    })
+                weui.uploader('#uploader', {
+                    url: 'member/upload',
+                    auto: false,
+                    type: 'base64',
+                    fileVal: 'fileVal',
+                    compress: {
+                        width: 350,
+                        height: 350,
+                        quality: .7
+                    },
+                    onBeforeQueued: function(files) {
+                        // `this` 是轮询到的文件, `files` 是所有文件
+                        if(["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0){
+                            weui.alert('请上传图片');
+                            return false; // 阻止文件添加
+                        }
+                        if (files.length > 1) { // 防止一下子选择过多文件
+                            weui.alert('最多只能上传1张图片，请重新选择');
+                            return false;
+                        }
+                    },
+                    onQueued: function(){
+                        var base64 = this.base64
+                        var this_a  = this
+                        console.log(this_a)
+                        ajaxPost(
+                            {
+                                type: "POST",
+                                url: "modifyMyInfo",
+                                data: {headThumb: base64,memberId: personal_data.memberId},
+                                success: function (data) {
+                                    if (data.statusCode == 200) {
+                                        personal_data.headImageUrl = base64
+                                        console.log('111',base64)
+                                        var  html  = `<img  src="${base64}" alt="" style="width: 50px;display: block;height:auto;height: 50px" >`
+                                        $('#headportrait').html(html)
+                                        $('#otherName').html(html)
+                                        $('#headportrait').on("click", "img", function(){
+                                            var abc = `background-image: url('${this.getAttribute("src")}');`
+                                            $galleryImg.attr("style", abc);
+                                            $gallery.fadeIn(100);
+                                        });
+                                    } else {
+                                        weui.topTips(data.message, 3000);
+                                    }
+                                }
+                            });
+                        // var  html  = `<img  src="${base64}" alt="" style="width: 50px;display: block;height:auto;height: 50px" >`
+                        // $('#headportrait').html(html)
+                        // $('#headportrait').on("click", "img", function(){
+                        //     var abc = `background-image: url('${this.getAttribute("src")}');`
+                        //     $galleryImg.attr("style", abc);
+                        //     $gallery.fadeIn(100);
+                        // });
+                    },
+                    onBeforeSend: function(data, headers){
+
+                    },
+                    onProgress: function(procent){
+                    },
+                    onSuccess: function (ret) {
+                        console.log(this.base64)
+                        var  html  = `<img id="headImageUrl" src="${this.base64}" alt="" style="width: 50px;display: block;height:auto" style="width: 50px;display: block;height:auto">`
+                        $('#headportrait').html(html)
+                    },
+                    onError: function(err){
+                    }
+                });
+            });
+
+        </script>
+    </div>
+</body>
+</html>

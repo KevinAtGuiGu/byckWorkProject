@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 开始世袭设置页面 -->
+<div th:fragment="tpl_hereditary">
+        <div class="page">
+            <a href="javascript:" class="weui-btn_cell weui-btn_cell-primary fixed-b addHereditary">添加世袭</a>
+            <div class="weui-cells m-b">
+                <div class="weui-cell" href="javascript:" style="font-size:0.875rem;padding: 10px 16px;">
+                    <div class="weui-cell__bd">
+                        <p style="color: rgba(0, 0, 0, 0.5)">代</p>
+                    </div>
+                    <div class="weui-cell__ft">辈分</div>
+                </div>
+                <div id = 'FamilyBasics'></div>
+                <!--<a class="weui-cell  weui-cell_access icon-ziyuan addHereditary" href="javascript:">-->
+                    <!--<div class="weui-cell__bd">-->
+                        <!--<p>第一世</p>-->
+                    <!--</div>-->
+                    <!--<div class="weui-cell__ft">昆</div>-->
+                <!--</a>-->
+                <!--<a class="weui-cell  weui-cell_access addHereditary" href="javascript:">-->
+                    <!--<div class="weui-cell__bd">-->
+                        <!--<p>第二世</p>-->
+                    <!--</div>-->
+                    <!--<div class="weui-cell__ft">春</div>-->
+                <!--</a>-->
+
+                <!--<a class="weui-cell  weui-cell_access addHereditary" href="javascript:">-->
+                    <!--<div class="weui-cell__bd">-->
+                        <!--<p>第三世</p>-->
+                    <!--</div>-->
+                    <!--<div class="weui-cell__ft">子</div>-->
+                <!--</a>-->
+                <div class="weui-loadmore" id="loading">
+                    <i class="weui-loading"></i>
+                    <span class="weui-loadmore__tips">正在加载</span>
+                </div>
+            </div>
+            <div id="dialogs">
+                <!--BEGIN dialog1-->
+                <div class="js_dialog" id="iosDialog1" style="display: none;">
+                    <div class="weui-mask"></div>
+                    <div id="js_dialog_1" class="weui-half-screen-dialog">
+                        <div class="weui-half-screen-dialog__hd">
+                            <div class="weui-half-screen-dialog__hd__side">
+                                <button class="weui-icon-btn">关闭<i class="weui-icon-close-thin"></i></button>
+                            </div>
+                            <div class="weui-half-screen-dialog__hd__main">
+                                <strong class="weui-half-screen-dialog__title">第一世</strong>
+                            </div>
+                        </div>
+                        <div class="weui-half-screen-dialog__bd">
+                            <div class="weui-cell weui-cell_active weui-cell_vcode">
+
+                                <div class="weui-cell__bd">
+                                    <input class="weui-input" type="text" id="js_input" autofocus="autofocus" placeholder="输入辈分" maxlength="1">
+                                </div>
+                                <div class="weui-cell__ft" id="btn">
+                                    <button class="weui-btn weui-btn_mini weui-btn_primary">确定</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!--END dialog1-->
+            </div>
+            <div id="dialogs2">
+                <!--BEGIN dialog1-->
+                <div class="js_dialog" id="iosDialog2" style="display: none;">
+                    <div class="weui-mask"></div>
+                    <div id="js_dialog_2" class="weui-half-screen-dialog">
+                        <div class="weui-half-screen-dialog__hd">
+                            <div class="weui-half-screen-dialog__hd__side">
+                                <button class="weui-icon-btn">关闭<i class="weui-icon-close-thin"></i></button>
+                            </div>
+                            <div class="weui-half-screen-dialog__hd__main">
+                                <strong class="weui-half-screen-dialog__title">第一世</strong>
+                            </div>
+                        </div>
+                        <div class="weui-half-screen-dialog__bd">
+                            <div class="weui-cell weui-cell_active weui-cell_vcode">
+
+                                <div class="weui-cell__bd">
+                                    <input class="weui-input" type="text" id="js_input2" autofocus="autofocus" placeholder="输入辈分" maxlength="1">
+                                </div>
+                                <div class="weui-cell__ft" id="btn2">
+                                    <button class="weui-btn weui-btn_mini weui-btn_primary">确定</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!--END dialog1-->
+            </div>
+
+        </div>
+        <script type="text/javascript">
+            $(function(){
+                var countPage=1;//总页数
+                var page=2;//当前页
+                var pageSize=8;//每页显示几条
+                //获取数据
+                var loading = false;  //状态标记 这个变量主要是用来控制触发次数，官网也有说明，事件可能会触发多次
+                var totalCount = 0; //总数
+                var  list = [];
+                var list2 = [];
+                var  div_a = "";
+                var html
+                var  index = "";
+                var $dialog1 = $('#js_dialog_1'),
+                    $iosDialog1 = $('#iosDialog1');
+                var $dialog2 = $('#js_dialog_2'),
+                    $iosDialog2 = $('#iosDialog2');
+                var content  = "";
+                var amount;
+                var loading1 = weui.loading("加载中..");
+                var cnum = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+                var amount = true;
+                function rp (n) {
+                    var s = '';
+                    n = '' + n; // 数字转为字符串
+                    for (var i = 0; i < n.length; i++) {
+                        s += cnum[parseInt(n.charAt(i))];
+                    }
+                    if (s.length == 2) { // 两位数的时候
+                        // 如果个位数是0的时候，令改成十
+                        if (s.charAt(1) == cnum[0]) {
+                            s = s.charAt(0) + cnum[10];
+                            // 如果是一十改成十
+                            if (s == cnum[1] + cnum[10]) {
+                                s = cnum[10]
+                            }
+                        } else if (s.charAt(0) == cnum[1]) {
+                            // 如果十位数是一的话改成十
+                            s = cnum[10] + s.charAt(1);
+                        }
+                    }
+                    return s;
+                }
+                zidiao()
+                function zidiao(){
+                    console.log('yiyiyiyyiyiyiyiyiyiyiyiyi')
+                    ajaxPost(
+                        {
+                            type: "GET",
+                            url: "getFamilyBasics",
+                            data: {familyId:1,currPage : 1},
+                            success: function (data) {
+                                loading1.hide();
+                                if (data.statusCode == 200) {
+                                    $("#loading").css("display","none");//数据加载完隐藏加载提示
+                                    list = data.data.rows
+                                    countPage  = data.data.totalPage
+                                    pageSize   = data.data.pageSize
+                                    totalCount = data.data.totalCount
+                                    for (var i = 0; i < list.length;i++){
+                                        html =`<a class="weui-cell  weui-cell_access  addHereditary" href="javascript:">
+                    <div class="weui-cell__bd">
+                        <p>${list[i].description}</p>
+                    </div>
+                    <div class="weui-cell__ft1 calgrey" ><span>${list[i].familyBasicName}</span> <i  class="iconfont icon-xiugai"></i></div>
+                </a>`
+                                        div_a +=html
+                                    }
+                                    loading = false;
+                                    $('#FamilyBasics').append(div_a)
+                                    $('#FamilyBasics a').on('click', function(){
+                                        $('.fixed-b').hide()
+                                        index = $(this).index()
+
+                                        var name= $(this).children("div:first-child").children("p").text()
+                                        var nameval = $(this).children("div:last-of-type").text()
+                                        content  =$(this).children("div:last-of-type").children("span")
+                                        $dialog1.children('div:first-child').children("div:last-of-type").children(".weui-half-screen-dialog__title").text(name)
+                                        $('#js_input').val(nameval)
+                                        $iosDialog1.fadeIn(200);
+                                        $dialog1.addClass('weui-half-screen-dialog_show');
+                                        // console.log($('#FamilyBasics>a:eq("+index+")'))
+                                        // console.log( $("#FamilyBasics>a:eq("+index+")"))
+                                    });
+                                    $('#btn').on('click','.weui-btn',function () {
+                                        console.log(index)
+                                        console.log(list[index])
+                                        console.log($('#js_input').val())
+
+                                        var hereditaryName = $('#js_input').val()
+                                        if(hereditaryName){
+                                            ajaxPost(
+                                                {
+                                                    type: "POST",
+                                                    url: "modifyHereditary",
+                                                    data: {familyBasicId: list[index].familyBasicId, familyBasicName:hereditaryName },
+                                                    success: function (data) {
+
+                                                        if (data.statusCode == 200) {
+                                                            content.text(hereditaryName)
+                                                            $iosDialog1.fadeOut(200);
+                                                            $('.fixed-b').show()
+                                                        } else {
+                                                            weui.topTips(data.message, 1500);
+                                                        }
+                                                    }
+                                                });
+                                        }
+
+                                    })
+                                    $('#dialogs').on('click', '.weui-mask', function(){
+                                        $(this).parents('.js_dialog').fadeOut(200);
+                                        $dialog2.removeClass('weui-half-screen-dialog_show');
+                                        $('.fixed-b').show()
+                                    });
+                                    $('#dialogs').on('click', '.weui-icon-btn', function(){
+                                        $('.js_dialog').fadeOut(200);
+                                        $dialog2.removeClass('weui-half-screen-dialog_show');
+                                        $('.fixed-b').show()
+                                    });
+                                } else {
+                                    weui.topTips(data.message, 3000);
+                                }
+                            }
+                        });
+                }
+
+
+
+                $('.addHereditary').on('click', function(){
+                    if(totalCount> 0 ){
+                        console.log(rp(list.length))
+                        amount  = `第${rp(totalCount)}世`
+                        $dialog2.children('div:first-child').children("div:last-of-type").children(".weui-half-screen-dialog__title").text(amount)
+                    }else {
+                        amount  = "第一世"
+                    }
+                    $('.fixed-b').hide()
+                    $iosDialog2.fadeIn(200);
+                    $dialog2.addClass('weui-half-screen-dialog_show');
+                });
+
+                $('#btn2').on('click','.weui-btn',function () {
+                    console.log("hha")
+                    var hereditaryName = $('#js_input2').val()
+                    // $('.page').infinite()
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "saveFamilyBasic",
+                            data: {familyBasicName: hereditaryName,familyId:1,description:amount},
+                            success: function (data) {
+
+                                if (data.statusCode == 200) {
+                                    $('#FamilyBasics').empty()
+                                    div_a = ""
+
+                                    page=2;
+                                    zidiao()
+                                    $('.page').infinite()
+                                    var  html = `<i class="weui-loading"></i>
+                    <span class="weui-loadmore__tips">正在加载</span>`
+                                    $('#loading').html(html)
+                                    console.log(list)
+                                    console.log(data)
+                                    $('.js_dialog').fadeOut(200);
+                                    $dialog1.removeClass('weui-half-screen-dialog_show');
+                                    $('.fixed-b').show()
+                                } else {
+                                    weui.topTips(data.message, 1500);
+                                }
+                            }
+                        });
+                })
+                $('#dialogs2').on('click', '.weui-mask', function(){
+                    $(this).parents('.js_dialog').fadeOut(200);
+                    $dialog1.removeClass('weui-half-screen-dialog_show');
+                    $('.fixed-b').show()
+                });
+                $('#dialogs2').on('click', '.weui-icon-btn', function(){
+                    $('.js_dialog').fadeOut(200);
+                    $dialog1.removeClass('weui-half-screen-dialog_show');
+                    $('.fixed-b').show()
+                });
+
+                function getbalancelist(){
+                    console.log("ererererererererer")
+                    ajaxPost(
+                        {
+                            type: "GET",
+                            url: "getFamilyBasics",
+                            data: {familyId:1,currPage : page},
+                            success: function (data) {
+                                loading1.hide();
+                                if (data.statusCode == 200) {
+                                    list = data.data.rows
+                                    countPage  = data.data.totalPage
+                                    pageSize   = data.data.pageSize
+                                    //alert(list.length)
+                                    console.log(list)
+                                    for (var i = 0; i < list.length;i++){
+                                        html =`<a class="weui-cell  weui-cell_access  addHereditary" href="javascript:">
+                    <div class="weui-cell__bd">
+                        <p>${list[i].description}</p>
+                    </div>
+                    <div class="weui-cell__ft1 calgrey" ><span>${list[i].familyBasicName}</span> <i  class="iconfont icon-xiugai"></i></div>
+                </a>`
+                                        div_a +=html
+                                    }
+                                    loading = false;//会多次触发，所以 需要请求完成数据 才能继续触发
+                                    page++;
+                                    $("#loading").css("display","none");//数据加载完隐藏加载提示
+                                    // })
+                                    console.log('dayu')
+                                    $('#FamilyBasics').append(div_a)
+                                    $('#FamilyBasics a').on('click', function(){
+                                        $('.fixed-b').hide()
+                                        index = $(this).index()
+
+                                        var name= $(this).children("div:first-child").children("p").text()
+                                        var nameval = $(this).children("div:last-of-type").text()
+                                        content  =$(this).children("div:last-of-type").children("span")
+                                        $dialog1.children('div:first-child').children("div:last-of-type").children(".weui-half-screen-dialog__title").text(name)
+                                        $('#js_input').val(nameval)
+                                        $iosDialog1.fadeIn(200);
+                                        $dialog1.addClass('weui-half-screen-dialog_show');
+                                        // console.log($('#FamilyBasics>a:eq("+index+")'))
+                                        // console.log( $("#FamilyBasics>a:eq("+index+")"))
+                                    });
+                                    $('#btn').on('click','.weui-btn',function () {
+                                        console.log(index)
+                                        console.log(list[index])
+                                        console.log($('#js_input').val())
+
+                                        var hereditaryName = $('#js_input').val()
+                                        if(hereditaryName){
+                                            ajaxPost(
+                                                {
+                                                    type: "POST",
+                                                    url: "modifyHereditary",
+                                                    data: {familyBasicId: list[index].familyBasicId, familyBasicName:hereditaryName },
+                                                    success: function (data) {
+
+                                                        if (data.statusCode == 200) {
+                                                            content.text(hereditaryName)
+                                                            $iosDialog1.fadeOut(200);
+                                                            $('.fixed-b').show()
+                                                        } else {
+                                                            weui.topTips(data.message, 1500);
+                                                        }
+                                                    }
+                                                });
+                                        }
+
+                                    })
+                                    $('#dialogs').on('click', '.weui-mask', function(){
+                                        $(this).parents('.js_dialog').fadeOut(200);
+                                        $dialog2.removeClass('weui-half-screen-dialog_show');
+                                        $('.fixed-b').show()
+                                    });
+                                    $('#dialogs').on('click', '.weui-icon-btn', function(){
+                                        $('.js_dialog').fadeOut(200);
+                                        $dialog2.removeClass('weui-half-screen-dialog_show');
+                                        $('.fixed-b').show()
+                                    });
+                                } else {
+                                    weui.topTips(data.message, 3000);
+                                }
+                            }
+                        });
+                }
+
+                $('.page').infinite().on("infinite", function() {
+                    $("#loading").css("display","block");//显示 加载中图标
+                    if(loading) return;
+                    loading = true;
+                    if(page<=countPage){//如果当前页小于总页面
+                        getbalancelist();
+                        div_a = ""
+                    }else{
+                        console.log('chuihui')
+                        $('.page').destroyInfinite();//到最后一页时，销毁它
+                        $("#loading>i").css("display","none");
+                        $("#loading>span").html("到底啦~").css("color","#BDBDBD");
+                    }
+                });
+            });
+    </script>
+</div>
+</body>
+</html>

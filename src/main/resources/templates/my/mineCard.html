@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 开始我的页面 -->
+<div th:fragment="tpl_mineCard">
+    <div class="page">
+        <div class="weui-form"  >
+            <div class="weui-form__text-area">
+                <h2 class="weui-form__title">请输入要绑定的身份证</h2>
+                <!-- <div class="weui-form__desc">验证手机号样式</div> -->
+            </div>
+            <div class="weui-form__control-area">
+                <div class="weui-cells__group weui-cells__group_form">
+                    <div class="weui-cells weui-cells_form mb-2">
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd"><label class="weui-label" style="width:auto">身份证</label></div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" name="card"  id="card" type="text"  placeholder="请输入身份证号" />
+                            </div>
+                            <div class="weui-cell__ft card" style="display: none">
+                                <button class="weui-btn_reset weui-btn_icon">
+                                    <i id="showIOSDialog1" class="iconfont icon-icon-cross-empty"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active weui-cell_vcode">
+                            <div class="weui-cell__hd"><label class="weui-label" style="width:auto">验证码</label></div>
+                            <div class="weui-cell__bd">
+                                <input autofocus class="weui-input" name="cardcode" type="text" pattern="[0-9]*" id="js_input" placeholder="输入验证码" maxlength="6"/>
+                            </div>
+                            <div class="weui-cell__ft">
+                                <button  type="button" class="weui-btn weui-btn_default weui-vcode-btn get-code">获取验证码</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="weui-cells__tips"><a class="weui-link" href="javascript:;">收不到验证码</a></div> -->
+
+                    <div class="weui-form__opr-area">
+                        <a class="weui-btn weui-btn_primary weui-btn_disabled" style="margin-top: 20px" href="javascript:" id="showTooltips">确定</a>
+                    </div>
+                </div>
+            </div>
+            <!-- 弹出层 -->
+            <div id="toast" style="display: none;">
+                <div class="weui-mask_transparent"></div>
+                <div class="weui-toast">
+                    <!-- <i class="weui-icon-success-no-circle weui-icon_toast"></i> -->
+                    <!-- <p class="weui-toast__content">已完成</p> -->
+                </div>
+            </div>
+            <div class="captcha_dialog" id="tpl_home_captcha" style="display: none;">
+                <div class="weui-mask"></div>
+                <div class="weui-dialog">
+                    <div class="weui-dialog__bd">
+                        <a href="javascript:void(0);" title="点击更换验证码">
+                            <img th:src="drawCaptcha" id="tpl_home_imgcode" class="imgcode" width="85%"/>
+                        </a></br>
+                        <input autofocus class="weui-input" type="text" pattern="[0-9]*" id="tpl_home_captcha_input"
+                               placeholder="输入验证码" maxlength="6"/>
+                    </div>
+                    <div class="weui-dialog__ft">
+                        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="tpl_home_closeCaptchaCode">关闭</a>
+                        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary"
+                           id="tpl_home_submitCaptchaCode">确定</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            //这个是Js
+            var Card = personal_data.idCardNo
+            var  iswhow = false
+            var countDown
+            $(" #card ").val(Card)
+            var flag = false;
+            var verificationcode = ""
+            var $toast = $('#toast');
+            var $weuitoast = $('.weui-toast');
+            var  isshowbtn = false
+            function popup(content){
+                // var content = `<p class="weui-toast__content">${txt}</p>`
+                $weuitoast.html(content)
+                $toast.fadeIn(100);
+                setTimeout(function () {
+                    $toast.fadeOut(100);
+                }, 3000);
+            }
+
+            if($("input[name='card']").val()){
+                $('.card').show()
+            }
+
+            $("input[name='cardcode']").live('input propertychange', function()
+            {
+                //获取input 元素,并实时监听用户输入
+                if($("input[name='card']").val() && $("input[name='cardcode']").val()){
+                    $('#showTooltips').removeClass('weui-btn_disabled');
+                    isshowbtn =true
+                }else {
+                    $('#showTooltips').addClass('weui-btn_disabled');
+                    isshowbtn = false
+                }
+
+            });
+
+            $(" #card ").live('input propertychange', function()
+            {
+                //获取input 元素,并实时监听用户输入
+                Card  = $(" #card ").val();
+                if(Card.length > 0){
+                    $('.card').show()
+                }else {
+                    $('.card').hide()
+                }
+                if($("input[name='card']").val() && $("input[name='cardcode']").val()){
+                    $('#showTooltips').removeClass('weui-btn_disabled');
+                    isshowbtn =true
+                }else {
+                    $('#showTooltips').addClass('weui-btn_disabled');
+                    isshowbtn = false
+                }
+            });
+            //点击刷新验证码
+            $('#tpl_home_imgcode').click(function () {
+                var url = "drawCaptcha?s=" + Math.random();
+                $("#tpl_home_imgcode").attr("src", url);
+            });
+            $(".get-code").on('click',function(){
+                Card  = $(" #card ").val();
+                var myreg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                //  调用弹出提示用户
+
+                if(Card  == ''){
+                    var txt = `<p class="weui-toast__content">${"身份证号不能为空!"}</p>`
+                    popup(txt)
+                }else if(!myreg.test(Card )){
+
+                    var txt = `<p class="weui-toast__content">${"请输入正确的身份证号!"}</p>`
+                    popup(txt)
+                }else {
+                    flag = true
+
+                }
+                if(flag && !iswhow){
+                    $('#tpl_home_captcha').fadeIn(200);
+                    // 刷新一下验证码
+                    var url = "drawCaptcha?s=" + Math.random();
+                    $("#tpl_home_imgcode").attr("src", url);
+                    // 清空验证码框里面的输入值
+                    $('#tpl_home_captcha_input').val('');
+                }
+
+            })
+
+            // 关闭验证码弹窗
+            $('#tpl_home_closeCaptchaCode').on('click',function () {
+                var $toast = $('#tpl_home_captcha');
+                $toast.fadeOut(100);
+            });
+            $('#tpl_home_submitCaptchaCode').on('click', function () {
+                var code = $('#tpl_home_captcha_input').val();
+                let count = 60;
+                ajaxPost(
+                    {
+                        type: "POST",
+                        url: "sendSms",
+                        data: {kaptchaCode: code, phone: personal_data.account,type:"modifyIdCard"},
+                        success: function (data) {
+
+                            if (data.statusCode == 200) {
+                                var  mantissa =  personal_data.account.substr(-4)
+                                var txt = `<i class="weui-icon-success-no-circle weui-icon_toast"></i><p class="weui-toast__content">已发送至手机尾号:${mantissa}</p>`
+                                popup(txt)
+                               // $('#js_input').val(data.data);
+                                if(flag && !iswhow){
+                                     countDown = setInterval(function()  {
+                                        if (count === 0) {
+                                            iswhow = false
+                                            $('.get-code').text('重新发送').removeAttr('disabled');
+                                            $('.get-code').css({
+                                                background: '#F2F2F2',
+                                                color: '#c77e34',
+                                            });
+                                            clearInterval(countDown);
+                                        } else {
+                                            iswhow = true
+                                            $('.get-code').attr('disabled', 'true');
+                                            $('.get-code').css({
+                                                background: '#d8d8d8',
+                                                color: '#707070',
+                                            });
+                                            $('.get-code').text(count + 's之后重试');
+                                        }
+                                        count--;
+                                    }, 1000);
+                                }
+                                setTimeout(function () {
+
+                                    $("#tpl_home_captcha").fadeOut(200);
+                                }, 500);
+                            } else {
+                                weui.topTips(data.message, 1500);
+                            }
+                        }
+                    });
+            });
+            $("#js_input ").live('input propertychange', function()
+            {
+                //获取input 元素,并实时监听用户输入
+                verificationcode = $(" #js_input ").val();
+            });
+            // 清空手机号
+            $('#showIOSDialog1').on('click',function(){
+                $(" #card ").val("")
+                $('.card').hide()
+                $('#showTooltips').addClass('weui-btn_disabled');
+            });
+            // 确定请求提交按钮
+            $('#showTooltips').on('click',function(){
+                if( !isshowbtn) return
+                verificationcode = $(" #js_input ").val();
+                if (verificationcode && Card) {
+                    //返回上一页
+                    //window.history.go(-1);
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "modifyMyIdCard",
+                            data: {smsCode: verificationcode, idCard: Card},
+                            success: function (data) {
+
+                                if (data.statusCode == 200) {
+                                    // location.reload();
+                                    // window.location.href = 'my#mineList'
+                                    var txt = `<i class="weui-icon-success-no-circle weui-icon_toast"></i><p class="weui-toast__content">${"修改成功"}</p>`
+                                    popup(txt)
+                                    personal_data.idCardNo = Card
+                                    setTimeout(function(){
+                                        clearInterval(countDown);
+                                        iswhow = false
+                                        $('.get-code').text('获取验证码').removeAttr('disabled');
+                                        $('.get-code').css({
+                                            background: '#F2F2F2',
+                                            color: '#c77e34',
+                                        });
+
+                                        $('#mineCard .weui-cell__ft').text(Card)
+                                        history.go(-1)
+                                    }, 1500);
+                                } else {
+                                    weui.topTips(data.message, 1500);
+                                }
+                            }
+                        });
+                }
+
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

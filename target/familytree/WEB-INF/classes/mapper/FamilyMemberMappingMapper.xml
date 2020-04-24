@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingtrustcloud.familytree.mapper.FamilyMemberMappingMapper">
+
+    <select id="listApprovel" parameterType="collection"
+            resultType="com.kingtrustcloud.familytree.vo.FamilyBranchApprovelVO">
+        SELECT
+        fmm.family_member_mapping_id familyMemberMappingId,
+        fb.family_basic_name familyBasicName,
+        mbi.user_name userName,
+        mbi.family_name familyName,
+        mbi.other_name otherName,
+        mbi.address address,
+        mbi.province_id provinceId,
+        mbi.city_id cityId,
+        mbi.birthday_place birthdayPlace,
+        fmm.member_id memberId,
+        fmm.create_time createTime,
+        mbi2.user_name nickName,
+        mbi2.head_thumb headImageUrl,
+        mbi2.gender_id as sex,
+        fabran.family_branch_id familyBranchId,
+        fabran.branch_name branchName
+        FROM
+        family_member_mapping fmm
+        LEFT JOIN member_basic_info mbi ON fmm.member_id = mbi.member_id and mbi.is_delete=0
+        left join member_basic_info mbi2 ON fmm.col1 = mbi2.member_id and mbi2.is_delete=0
+        LEFT JOIN family_basic fb ON fmm.family_basic_id = fb.family_basic_id and fb.is_delete=0
+        LEFT JOIN family_branch fabran ON fmm.family_branch_id = fabran.family_branch_id and fabran.is_delete=0
+        WHERE
+        fmm.status_id =0 and fmm.is_delete=0
+        <foreach collection="list" item="item" separator="," open=" and fmm.family_branch_id in (" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="listFamilyBranchAdminInfo" parameterType="collection"
+            resultType="com.kingtrustcloud.familytree.vo.FamilyBranchAdminVO">
+        select fmm.family_member_mapping_id familyMemberMappingId,fb.family_basic_name familyBasicName,
+        mbi.user_name userName,mbi.family_name familyName,mbi.other_name otherName,mbi.address address,mbi.province_id
+        provinceId,mbi.city_id cityId,mbi.birthday_place birthdayPlace,fmm.member_id memberId,fmm.create_time
+        createTime,
+        wu.nick_name nickName,wu.head_image_url headImageUrl,wu.sex,fabran.family_branch_id
+        familyBranchId,fabran.branch_name branchName
+        from family_member_mapping fmm left join member_basic_info mbi on fmm.member_id=mbi.member_id and mbi.is_delete=0
+        left join weixin_user wu on fmm.col1 = wu.user_id and wu.is_delete=0
+        left join family_basic fb on fmm.family_basic_id=fb.family_basic_id and fb.is_delete=0
+        left join family_branch fabran on fmm.family_branch_id = fabran.family_branch_id and fabran.is_delete=0
+        where fmm.status_id=0 and fmm.is_delete=0
+        <foreach collection="list" item="item" separator="," open=" and fmm.family_branch_admin_id in (" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="searchListMergeBranch" resultType="com.kingtrustcloud.familytree.vo.SearchBranchResultVO">
+    SELECT
+	mbi.family_name familyName,
+	fmm.family_basic_id familyBasicId,
+	fb.branch_name branchName,
+	fb.family_branch_id familyBranchId
+    FROM
+	family_member_mapping fmm
+	LEFT JOIN member_basic_info mbi ON fmm.member_id = mbi.member_id and mbi.is_delete=0
+	LEFT JOIN family_branch fb ON fmm.family_branch_id = fb.family_branch_id and fb.is_delete=0
+    WHERE
+	fmm.parent_member_id IS NULL
+	AND fmm.mate_id IS NULL
+	AND fmm.status_id = 1
+	AND fmm.family_branch_id IS NOT NULL
+	AND fmm.is_delete = FALSE
+    </select>
+
+    <select id="branchSearch" resultType="com.kingtrustcloud.familytree.vo.MergeBranchVO">
+        SELECT
+        fb.branch_name branchName,fb.family_branch_id familyBranchId,mbi.member_id memberId,fmm.family_member_mapping_id familyMemberMappingId
+        FROM
+        family_member_mapping fmm
+        LEFT JOIN member_basic_info mbi ON fmm.member_id = mbi.member_id and mbi.is_delete=0
+        left join family_branch fb on fmm.family_branch_id=fb.family_branch_id and fb.is_delete=0
+        WHERE
+        fmm.parent_member_id IS NOT NULL
+        AND fmm.status_id = 1
+        AND fmm.family_branch_id IS NOT NULL
+        and fmm.is_delete=0
+        <if test="familyBasicId != null ">
+            AND fmm.family_basic_id = #{familyBasicId}
+        </if>
+        <if test="familyName !=null and familyName != ''">
+            AND mbi.family_name = #{familyName};
+        </if>
+    </select>
+
+    <select id="searchRootMember" resultType="com.kingtrustcloud.familytree.vo.SearchBranchResultVO" parameterType="long">
+    SELECT
+	mbi.family_name familyName,mbi.member_id memberId,
+	fmm.family_basic_id familyBasicId,
+	fb.branch_name branchName,
+	fb.family_branch_id familyBranchId
+    FROM
+	family_member_mapping fmm
+	LEFT JOIN member_basic_info mbi ON fmm.member_id = mbi.member_id and mbi.is_delete=0
+	LEFT JOIN family_branch fb ON fmm.family_branch_id = fb.family_branch_id and fb.is_delete=0
+    WHERE
+	fmm.parent_member_id IS NULL
+	AND fmm.mate_id IS NULL
+	AND fmm.status_id = 1
+	AND fmm.is_delete = FALSE
+	AND fmm.family_branch_id = #{familyBranchId};
+    </select>
+
+
+</mapper>

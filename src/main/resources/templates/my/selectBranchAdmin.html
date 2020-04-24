@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 开始选择分支管理员页面 -->
+<div th:fragment="tpl_selectBranchAdmin">
+    <div class="page">
+        <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+        </div>
+        <div class="searchbar-result" id="searchResult">
+            <div class="weui-form">
+                <div class="weui-form__control-area">
+                    <div class="weui-cells__group weui-cells__group_form" id="searchFamilyBranchResults_form">
+                        <div class="weui-cells weui-cells_checkbox" id="checkBoxsBranch">
+                            <!--  <label class="weui-cell weui-cell_active weui-check__label" for="s11">
+                                  <div class="weui-cell__hd">
+                                      <input type="checkbox" class="weui-check" name="checkbox1" id="s11" >
+                                      <i class="weui-icon-checked"></i>
+                                  </div>
+                                  <div class="weui-cell__bd">
+                                      <p>朝进裔孙起观</p>
+                                  </div>
+                                  <a href="#tree" class="gotree">查看</a>
+                              </label>-->
+                            <!--  <label class="weui-cell weui-cell_active weui-check__label" for="s12">
+                                  <div class="weui-cell__hd">
+                                      <input type="checkbox" name="checkbox1" class="weui-check" id="s12">
+                                      <i class="weui-icon-checked"></i>
+                                  </div>
+                                  <div class="weui-cell__bd">
+                                      <p>朝进裔孙起观</p>
+                                  </div>
+                                  <a href="#tree" class="gotree">查看</a>
+                              </label>-->
+                        </div>
+                        <div class="weui-loadmore" id="branch_loading">
+                            <i class="weui-loading"></i>
+                            <span class="weui-loadmore__tips">正在加载</span>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="weui-form__opr-area">
+                    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        var branch_loading = false;
+        $('.page').infinite().on("infinite", function () {
+            $("#branch_loading").css("display", "block");//显示 加载中图标
+            if (branch_loading) return;
+            branch_loading = true;
+            if (page <= countPage) {//如果当前页小于总页面
+                listSelectBranchAdminVO();
+            } else {
+                $('.page').destroyInfinite();//到最后一页时，销毁它
+                $("#branch_loading>i").css("display", "none");
+                $("#branch_loading>span").html("到底啦~").css("color", "#BDBDBD");
+            }
+        });
+        var countPage = 1;//总页数
+        var page = 1;//当前页
+        var pageSize = 18;//每页显示几条
+        var selectBranchAdmin = [];//分支成员列表
+        var hasSelect = []; //选中的成员列表
+        var pre_searchInput_val = ''; //搜索框内的值
+        var listSelectBranchAdminVO_timeout;
+
+        function listSelectBranchAdminVO(page2) {
+
+            var param = {
+                familyBranchId: branchlist.familyBranchId,
+                username: $('#searchInput').val(),
+                pageNum: page2 ? page2 : page,
+                pageSize: pageSize
+            }
+            // 获取此分支成员列表
+            ajaxPost(
+                {
+                    type: "GET",
+                    url: "listSelectBranchAdminVO",
+                    data: param,
+                    success: function (data) {
+                        if (data.statusCode == 200) {
+                            if (data.data) {
+                                //处理数据
+                                countPage = data.data.pages;
+                                // selectBranchAdmin = data.data.list;
+                                //渲染获取到的分支成员数据
+                                if (page2 != null) {
+                                    // renderSelectBranchAdmin();
+                                    $("#checkBoxsBranch").empty();
+                                    selectBranchAdmin = [];
+                                }
+                                renderSelectBranchAdmin(data.data.list);
+                                branch_loading = false;
+                                $("#branch_loading").css("display", "none");
+
+                            }
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                });
+            page++;
+        }
+
+        function renderSelectBranchAdmin(selectBranchAdmin2) {
+            var renderHtml = '';
+            for (var i = 0; i < selectBranchAdmin2.length; i++) {
+                selectBranchAdmin.push(selectBranchAdmin2[i]);
+                renderHtml += `<label class="weui-cell weui-cell_active weui-check__label ischecked"  for=${selectBranchAdmin2[i].memberId}>
+                                 <div class="weui-cell__hd ">
+                                     <input type="checkbox" class="weui-check" name="checkbox1"  id=${selectBranchAdmin2[i].memberId} >
+                                     <i class="weui-icon-checked"></i>
+                                 </div>
+                                 <div class="weui-cell__bd">
+                                     <p>${selectBranchAdmin2[i].userName} ${selectBranchAdmin2[i].account ? selectBranchAdmin2[i].account : ''}</p>
+                                 </div>
+                             </label>`;
+            }
+            $("#checkBoxsBranch").append(renderHtml);
+            /*          $('.ischecked').on('click', function () {
+                           //var isshow = $(this).children("div:first-child").children("input").is(':checked');
+                          var isshow = $(this).is(':checked')
+                          var index = $(this).index();
+
+                          console.log(isshow,index)
+                          if (!isshow) {
+                              $(this).children("div:first-child").children("input").attr('checked', 'true');
+                              hasSelect.push(selectBranchAdmin[index]);
+                          } else {
+                              $(this).children("div:first-child").children("input").removeAttr('checked');
+                              for (var i = 0; i < hasSelect.length; i++) {
+                                  if (hasSelect[i] === selectBranchAdmin[index]) {
+                                      hasSelect.splice(i, 1);
+                                      break;
+                                  }
+                              }
+                          }
+                      });*/
+            isCheckedAdmin()
+        }
+
+        function isCheckedAdmin() {
+            $('.ischecked').off().on('click', function () {
+                console.log(event.srcElement)
+                var isshow = $(this).children("div:first-child").children("input").is(':checked');
+                var index = $(this).index();
+                console.log(isshow, index)
+                if (!isshow) {
+                    $(this).children("div:first-child").children("input").attr('checked', 'true');
+                    hasSelect.push(selectBranchAdmin[index]);
+                } else {
+                    $(this).children("div:first-child").children("input").removeAttr('checked');
+                    for (var i = 0; i < hasSelect.length; i++) {
+                        if (hasSelect[i] === selectBranchAdmin[index]) {
+                            hasSelect.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+
+        $('#showTooltips').on('click', function () {
+            for (var i = 0; i < hasSelect.length; i++) {
+                var exist = false;
+                for (var j = 0; j < branch_admin_list.length; j++) {
+                    if (branch_admin_list[j].memberId == hasSelect[i].memberId) {
+                        exist = true;
+                        if (branch_admin_list[j].isDelete) {
+                            branch_admin_list[j].isDelete = false;
+                        }
+                    }
+                }
+                if (!exist) {
+                    branch_admin_list.push({
+                        memberId: hasSelect[i].memberId,
+                        isDelete: false,
+                        account: hasSelect[i].account,
+                        userName: hasSelect[i].userName,
+                    });
+                }
+            }
+            renderBranchAdmin(branch_admin_list);
+            history.go(-1);
+        });
+
+        $(function () {
+            listSelectBranchAdminVO();
+            //搜索
+            var $searchBar = $('#searchBar'),
+                $searchText = $('#searchText'),
+                $searchInput = $('#searchInput'),
+                $searchClear = $('#searchClear'),
+                $searchCancel = $('#searchCancel');
+            $searchText.on('click', function () {
+                $searchBar.addClass('weui-search-bar_focusing');
+                $searchInput.focus();
+            });
+            $searchClear.on('click', function () {
+                $searchInput.focus();
+                pre_searchInput_val = '';
+                $('#searchInput').val('');
+                page = 1;
+                $("#checkBoxsBranch").empty();
+                listSelectBranchAdminVO();
+            });
+            $searchCancel.on('click', function () {
+                $('#searchInput').val('');
+                pre_searchInput_val = '';
+                page = 1;
+                $("#checkBoxsBranch").empty();
+                listSelectBranchAdminVO();
+                $searchInput.blur();
+                $searchBar.removeClass('weui-search-bar_focusing');
+            });
+            $('#searchInput').live('input propertychange', function () {
+                //获取input 元素,并实时监听用户输入
+                if (pre_searchInput_val) {
+                    if (pre_searchInput_val === $('#searchInput').val()) {
+                        return;
+                    }
+                }
+                pre_searchInput_val = $('#searchInput').val();
+                if (listSelectBranchAdminVO_timeout) {
+                    clearTimeout(listSelectBranchAdminVO_timeout);
+                }
+                listSelectBranchAdminVO_timeout = setTimeout(function () {
+                    listSelectBranchAdminVO(1);
+                }, 1500);
+            });
+
+            /*   var searchFamilyBranchResults_loading = false;//状态标记 这个变量主要是用来控制触发次数，官网也有说明，事件可能会触发多次
+               var   countPage=1;//总页数
+               var   page=1;//当前页
+               var   pageSize=10;//每页显示几条*/
+
+            // $("#searchFamilyBranchResults_form").scroll(function(){
+            //     var $this =$(this),
+            //         viewH =$this.height(),//可见高度   $("#contain")[0].clientHeight
+            //         contentH =$this.get(0).scrollHeight,//内容高度
+            //         scrollTop =$this.scrollTop();//滚动高度
+            //     if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容
+            //         console.log('现在百分比是： ', scrollTop/(contentH -viewH))
+            //         $("#searchFamilyBranchResults_loading").css("display","block");//显示 加载中图标
+            //         if(searchFamilyBranchResults_loading) return;
+            //         searchFamilyBranchResults_loading = true;
+            //         if(page<=countPage){//如果当前页小于总页面
+            //             searchFamilyBranch(param);
+            //         } else {
+            //             $("#searchFamilyBranchResults_loading>i").css("display","none");
+            //             $("#searchFamilyBranchResults_loading>span").html("到底啦~").css("color","#BDBDBD");
+            //         }
+            //     }
+            // });
+        });
+    </script>
+</div>
+</body>
+</html>

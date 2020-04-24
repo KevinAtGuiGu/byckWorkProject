@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 开始搜索结果页面 -->
+<div th:fragment="tpl_search_results">
+    <div class="page" id="searchFamilyBranchResults_page">
+        <div class="weui-form">
+
+            <div class="weui-form__control-area" >
+                <div class="weui-cells__group weui-cells__group_form" id="searchFamilyBranchResults_form" style="overflow-y: auto;max-height: 500px;">
+                    <div class="weui-cells__title">搜索分支族谱结果</div>
+                    <div class="weui-cells weui-cells_radio" id="tpl_search_results_list">
+                        <!--
+                        <label class="weui-cell weui-cell_active weui-check__label" for="x11">
+                            <div class="weui-cell__bd">
+                                <p nameid="">cell standard</p>
+                            </div>
+                            <div class="weui-cell__ft">
+                                <input type="radio" class="weui-check" name="radio1" id="x11"/>
+                                <span class="weui-icon-checked"></span>
+                            </div>
+                        </label>
+                        -->
+                        <a href="javascript:void(0);" class="weui-cell weui-cell_active weui-cell_link"
+                           id="tpl_search_results_addF" onclick="toAddFamilyBranch()">
+                            <div class="weui-cell__bd">添加族谱</div>
+                        </a>
+                    </div>
+                    <div class="weui-loadmore" id="searchFamilyBranchResults_loading">
+                        <i class="weui-loading"></i>
+                        <span class="weui-loadmore__tips">正在加载</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fixed-b">
+                <a class="sousuo" href='javascript:void(0);' onclick="toSearchFamilyBranchPage()">重新搜索</a>
+                <a class="weui-btn weui-btn_primary weui-btn_disabled forbidden"  href="javascript:;" id="tpl_search_results_approvel">申请加入</a>
+            </div>
+
+            <div class="weui-form__tips-area">
+                <p class="weui-form__tips">
+
+                </p>
+            </div>
+
+        </div>
+
+        <div id="js_toast" style="display: none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">已完成</p>
+            </div>
+        </div>
+
+        <!--BEGIN dialog1-->
+        <div class="js_dialog" id="dialog_hasBind" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">提示</strong></div>
+                <div class="weui-dialog__bd">此成员已被微信用户{}绑定，是否继续申请？</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default quxiao">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary quedin">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var countPage=0;//总页数
+        var page=1;//当前页
+        var pageSize=10;//每页显示几条
+        var radio_idx=0;
+        var checked_approvel;
+        function searchFamilyBranch(param) {
+            param.pageNum=page;
+            param.pageSize=pageSize;
+            ajaxPost(
+                {
+                    type: "POST",
+                    url: "searchFamilyBranch",
+                    data: param,
+                    success: function (data) {
+                        if (data.statusCode == 200) {
+                            countPage=data.data.pages;
+                            renderList(data.data.list);
+                            page++;
+                            searchFamilyBranchResults_loading = false;//会多次触发，所以 需要请求完成数据 才能继续触发
+                            $("#searchFamilyBranchResults_loading").css("display","none");//数据加载完隐藏加载提示
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                }
+            );
+        }
+
+        function renderList(list) {
+            var bd = $('#tpl_search_results_list');
+            for (var i = 0; i < list.length; i++) {
+                radio_idx=radio_idx+i+1;
+                var nickName=list[i].nickName?list[i].nickName:'';
+                bd.append('<label class="weui-cell weui-cell_active weui-check__label" for="x' + radio_idx + '">' +
+                    '<div class="weui-cell__bd">' +
+                    '<p>' + list[i].branchName + ' ' + list[i].familyBasicName + ' ' + list[i].familyName + '</p>' +
+                    '</div>' +
+                    '<div class="weui-cell__ft">' +
+                    '<input type="radio" class="weui-check" name="radio1" data-nickname="'+nickName+'" value="' + list[i].familyBranchId + ',' + list[i].memberId + '" id="x' + radio_idx + '" />' +
+                    '<span class="weui-icon-checked"></span>' +
+                    '</div>' +
+                    '</label>');
+            }
+            $('.weui-cell').on('click',function () {
+                $('.weui-cell').find('.weui-icon-checked').removeClass('checked')
+                $('.weui-btn.weui-btn_disabled').removeClass('weui-btn_disabled forbidden')
+                $(this).find('.weui-icon-checked').addClass('checked')
+                $(this).find('.weui-checked').prop("checked", true);
+            })
+        }
+
+        var searchFamilyBranchResults_loading = false;  //状态标记 这个变量主要是用来控制触发次数，官网也有说明，事件可能会触发多次
+        // $('#tpl_search_results_list').infinite(200).on("infinite", function() {
+        //     $("#searchFamilyBranchResults_loading").css("display","block");//显示 加载中图标
+        //     if(searchFamilyBranchResults_loading) return;
+        //     searchFamilyBranchResults_loading = true;
+        //     if(page<=countPage){//如果当前页小于总页面
+        //         searchFamilyBranch(param);
+        //     }else{
+        //         $('#searchFamilyBranchResults_form').destroyInfinite();//到最后一页时，销毁它
+        //         $("#searchFamilyBranchResults_loading>i").css("display","none");
+        //         $("#searchFamilyBranchResults_loading>span").html("到底啦~").css("color","#BDBDBD");
+        //     }
+        // });
+        $("#searchFamilyBranchResults_form").scroll(function(){
+            var $this =$(this),
+                viewH =$this.height(),//可见高度   $("#contain")[0].clientHeight
+                contentH =$this.get(0).scrollHeight,//内容高度
+                scrollTop =$this.scrollTop();//滚动高度
+            //if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
+            if(scrollTop/(contentH -viewH)>=0.95){ //到达底部100px时,加载新内容
+                console.log('现在百分比是： ', scrollTop/(contentH -viewH))
+                $("#searchFamilyBranchResults_loading").css("display","block");//显示 加载中图标
+                if(searchFamilyBranchResults_loading) return;
+                searchFamilyBranchResults_loading = true;
+                if(page<=countPage){//如果当前页小于总页面
+                    searchFamilyBranch(param);
+                } else {
+                    $("#searchFamilyBranchResults_loading>i").css("display","none");
+                    $("#searchFamilyBranchResults_loading>span").html("到底啦~").css("color","#BDBDBD");
+                }
+            }
+        });
+
+        $(function () {
+            countPage=0;//总页数
+            page=1;//当前页
+            pageSize=10;//每页显示几条
+            searchFamilyBranch(param);
+            $('#tpl_search_results_addF').on('click', function () {
+                window.location.hash = 'addFamilyBranch';
+            });
+            $('#dialog_hasBind').on('click', '.quxiao', function(){
+                $(this).parents('.js_dialog').fadeOut(200);
+            });
+            $('#dialog_hasBind').on('click', '.quedin', function(){
+                postApprovel(checked_approvel);
+                $(this).parents('.js_dialog').fadeOut(200);
+            });
+            $('#tpl_search_results_approvel').on('click', function () {
+                // var checkedValue = $("input[name='radio1']:checked").val();
+                var checkedValue =$('.weui-icon-checked.checked').siblings("input[name='radio1']").val()
+                if (!checkedValue) {
+                    weui.topTips("请先选择一个家族分支！", 2000);
+                }else {
+                    $('.weui-btn.weui-btn_disabled').removeClass('weui-btn_disabled')
+                }
+                var split = checkedValue.split(',');
+                checked_approvel={familyBranchId: split[0], memberId: split[1]};
+                var nickName=$('.weui-icon-checked.checked').siblings("input[name='radio1']").attr("data-nickname");
+                if(nickName) {
+                    // 此成员已被其他微信用户绑定，弹窗提示
+                    $('#dialog_hasBind').find('.weui-dialog__bd').html("此成员已被微信用户"+nickName+"绑定，是否继续申请？");
+                    $('#dialog_hasBind').fadeIn(200);
+                    return;
+                }
+                postApprovel(checked_approvel);
+            });
+        });
+        function toSearchFamilyBranchPage() {
+            window.location.hash = 'searchFamilyBranch';
+        }
+        function toAddFamilyBranch() {
+            window.location.hash = 'addFamilyBranch';
+        }
+
+        function postApprovel(data) {
+            var loading1 = weui.loading("加载中..");
+            ajaxPost(
+                {
+                    type: "POST",
+                    url: "postApprovel",
+                    data:data,
+                    success: function (data) {
+                        loading1.hide();
+                        if (data.statusCode == 200) {
+                            var $toast = $('#js_toast');
+                            $toast.fadeIn(100);
+                            setTimeout(function () {
+                                $toast.fadeOut(100);
+                                // 申请加入成功，跳转到成功申请页面
+                                window.location.hash = 'successPage';
+                            }, 1000);
+                        } else {
+                            weui.topTips(data.message, 1500);
+                        }
+                    }
+                });
+        }
+    </script>
+    <!-- 搜索结果页面END -->
+</div>
+</body>
+</html>

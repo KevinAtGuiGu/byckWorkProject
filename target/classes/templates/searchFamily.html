@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <base th:href="${#request.getContextPath()}+'/'">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>搜索家族</title>
+    <link rel="stylesheet" href="assets/css/weui.min.css"/>
+    <link rel="stylesheet" href="assets/css/familytree.css"/>
+    <link type="text/css" rel="stylesheet" href="assets/css/jsmind.css"/>
+</head>
+<body ontouchstart>
+<div class="container" id="container">
+    <div class="page">
+        <div class="weui-form">
+            <div class="weui-form__control-area">
+                <div class="weui-cells__group weui-cells__group_form">
+                    <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">姓名</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" placeholder="填写姓名" id="name"/>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">地域</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input autofocus class="weui-input" id="city-picker" placeholder="选择地域"/>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">父亲名</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" placeholder="填写父亲名" id="fatherName"/>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">曾用名</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" placeholder="填写曾用名" id="usedName"/>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">出生地点</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" placeholder="选择出生地点" id="birthPlace"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-form__opr-area">
+                <a class="weui-btn weui-btn_primary" href="javascript:" id="searchFamily">搜索</a>
+            </div>
+        </div>
+
+        <!-- 弹窗 -->
+        <div class="captcha_dialog" id="searchResult" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">搜索结果</strong></div>
+                <div class="weui-dialog__bd">
+                    <div>
+                        <span></span>
+                        <hr/>
+                    </div>
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary"
+                       onclick="newSearch()">重新搜索</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary"
+                       onclick="applyJoin()">申请加入</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary"
+                       onclick="createFamily()">创建家族</a>
+                </div>
+            </div>
+        </div>
+        <div id="toast" style="display: none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">操作成功！</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="assets/js/zepto.min.js"></script>
+<script type="text/javascript" src="assets/js/jweixin-1.0.0.js"></script>
+<script src="assets/js/weui.min.js"></script>
+<script src="assets/js/familytree.js"></script>
+<script src="assets/js/city.js"></script>
+<script th:inline="javascript">
+    // var ctx = [[@{/}]];
+    $(function () {
+        $("#searchFamily").on("click", function () {
+            var param = {
+                name: $('#name').val(),
+                fatherName: $('#fatherName').val(),
+                usedName: $('#usedName').val(),
+                country_id: 1,
+                province_id: city_picker_ids[0] ? null : city_picker_ids[0],
+                city_id: city_picker_ids[1] ? null : city_picker_ids[1],
+                district_id: city_picker_ids[2] ? null : city_picker_ids[2],
+            }
+            if (!param.name) {
+                weui.topTips("请填写名字", 3000);
+                return;
+            }
+            var loading1 = weui.loading("加载中..");
+            ajaxPost(
+                {
+                    type: "POST",
+                    url: "searchFamilyBranch",
+                    data: param,
+                    success: function (data) {
+                        loading1.hide();
+                        if (data.statusCode == 200) {
+                            var searchResult = $('#searchResult');
+                            searchResult.fadeIn(200);
+                            var bd=$('#searchResult').find('.weui-dialog__bd').first();
+                            for(var i=0;i<data.data.length;i++) {
+                                bd.append('<div><span nameid="'+data.data[i].id+'">'+data.data[i].name+'</span><hr/></div>');
+                            }
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                });
+        });
+    });
+
+    var city_picker_ids = [];
+    $('#city-picker').on('click', function () {
+        weui.picker(CHINA_CITY, {
+            title: '地区选择',
+            id: 'city-picker',
+            depth: 3,
+            defaultValue: city_picker_ids,
+            onChange: function (result) {
+            },
+            onConfirm: function (result) {
+                var value = '';
+                city_picker_ids = [];
+                for (var i = 0; i < result.length; i++) {
+                    value = value + ' ' + result[i].label;
+                    city_picker_ids.push(value);
+                }
+                $('#city-picker').val(value);
+            },
+        });
+    });
+
+    var birthPlace_ids = [];
+    $('#birthPlace').on('click', function () {
+        weui.picker(CHINA_CITY, {
+            title: '地区选择',
+            id: 'birthPlace',
+            depth: 3,
+            defaultValue: birthPlace_ids,
+            onChange: function (result) {
+            },
+            onConfirm: function (result) {
+                var value = '';
+                birthPlace_ids = [];
+                for (var i = 0; i < result.length; i++) {
+                    value = value + ' ' + result[i].label;
+                    birthPlace_ids.push(value);
+                }
+                $('#birthPlace').val(value);
+            },
+        });
+    });
+    
+    function newSearch() {
+        location.href="searchFamily";
+    }
+    //postApprovel
+    function applyJoin() {
+        var param;
+        ajaxPost(
+            {
+                type: "POST",
+                url: "postApprovel",
+                data: param,
+                success: function (data) {
+                    loading1.hide();
+                    if (data.statusCode == 200) {
+                        var searchResult = $('#searchResult');
+                        searchResult.fadeIn(200);
+                        var bd=$('#searchResult').find('.weui-dialog__bd').first();
+                        for(var i=0;i<data.data.length;i++) {
+                            bd.append('<div><span nameid="'+data.data[i].id+'">'+data.data[i].name+'</span><hr/></div>');
+                        }
+                    } else {
+                        weui.topTips(data.message, 3000);
+                    }
+                }
+            });
+    }
+
+    function createFamily() {
+        
+    }
+    
+</script>
+</body>
+</html>

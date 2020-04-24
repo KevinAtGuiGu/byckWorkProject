@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 开始我的审批页面 -->
+<div th:fragment="tpl_Approval">
+        <div class="page home js_show approvalPage">
+            <div class="top-m"></div>
+            <div class="page__hd show" style="margin-top: 50%;display: none">
+                <p class="page__desc"  style="text-align: center;">当前没有用户申请...</p>
+            </div>
+            <div class="page__bd page__bd_spacing">
+                <ul id="branch">
+                </ul>
+                <div class="weui-loadmore" id="loading">
+                <i class="weui-loading"></i>
+                <span class="weui-loadmore__tips">正在加载</span>
+            </div>
+                </div>
+            <div id="dialogs">
+                <!--BEGIN dialog1-->
+                <div class="js_dialog" id="iosDialog1" style="display: none;">
+                    <div class="weui-mask"></div>
+                    <div class="weui-dialog">
+                        <div class="weui-dialog__hd"><strong class="weui-dialog__title">请表明理由</strong></div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__bd">
+                                <textarea class="weui-textarea" placeholder="例如：信息有误" rows="1"></textarea>
+                            </div>
+                        </div>
+                        <div class="weui-dialog__ft">
+                            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default cancel ">取消</a>
+                            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary confirm">确定</a>
+                        </div>
+                    </div>
+                </div>
+                <!--END dialog1-->
+
+            </div>
+            </div>
+            <script type="text/javascript">
+                // $(function() {
+                //     FastClick.attach(document.body);
+                // });
+
+                var isSuperManage=[[${session.userRole == '超级管理员'}]];
+                // console.log(userRole);
+                // var isSuperManage=(userRole == '超级管理员');
+                var loading1 = weui.loading("加载中..");
+                var list = []
+                var list2 = []
+                // $('#branch').infinite();
+                var dav_li =""
+                var html= ""
+                $(function(){
+                    var loading = false;  //状态标记 这个变量主要是用来控制触发次数，官网也有说明，事件可能会触发多次
+                    var countPage=0;//总页数
+                    var page=1 ;//当前页
+                    var pageSize=8;//每页显示几条
+                    listApprovel()
+                    function listApprovel() {
+                        dav_li =""
+                        html= ""
+                        ajaxPost(
+                            {
+                                type: "GET",
+                                url: "listApprovel",
+                                data: {pageNum: page},
+                                success: function (data) {
+                                    if (data.statusCode == 200) {
+                                        list = data.data.list
+                                        list2 = list2.concat(data.data.list)
+                                        countPage = data.data.pages
+                                        console.log(list)
+                                        if (list.length < 1) {
+                                            $('.show').css("display","block");
+                                            loading = false;
+                                            $("#loading").css("display","none");
+                                            return;
+                                        }
+                                        examine()
+                                        loading = false;//会多次触发，所以 需要请求完成数据 才能继续触发
+                                        $("#loading").css("display","none");//数据加载完隐藏加载提示
+                                        page++;
+                                    } else {
+                                        weui.topTips(data.message, 1500);
+                                    }
+                                }
+                            });
+                    }
+                    $('.page').infinite().on("infinite", function() {
+                        $("#loading").css("display","block");//显示 加载中图标
+                        if(loading) return;
+                        loading = true;
+                        if(page<=countPage){//如果当前页小于总页面
+                            listApprovel();
+                        }else{
+                            $('.page').destroyInfinite();//到最后一页时，销毁它
+                            $("#loading>i").css("display","none");
+                            $("#loading>span").html("到底啦~").css("color","#BDBDBD");
+                        }
+                    });
+                    loading1.hide();
+                });
+                // 分支打开事件
+                function getAge(that) {
+                    var $this = $(that),
+                        $inner = $this.next('.js_categoryInner'),
+                        $page = $this.parents('.page'),
+                        $parent = $(that).parent('li');
+                    var innerH = $inner.data('height');
+                    // bear = $page;
+                    if(!innerH){
+                        $inner.css('height', 'auto');
+                        innerH = $inner.height();
+                        $inner.removeAttr('style');
+                        $inner.data('height', innerH);
+                    }
+                    if($parent.hasClass('js_show')){
+                        $parent.removeClass('js_show');
+                    }else{
+                        $parent.siblings().removeClass('js_show');
+                        $parent.addClass('js_show');
+                        if(this.offsetTop + this.offsetHeight + innerH > $page.scrollTop() + winH){
+                            var scrollTop = this.offsetTop + this.offsetHeight + innerH - winH + categorySpace;
+                            if(scrollTop > this.offsetTop){
+                                scrollTop = this.offsetTop - categorySpace;
+                            }
+                            $page.scrollTop(scrollTop);
+                        }
+                    }
+                    var winH = $(window).height();
+                    var $foot = $('body').find('.page__ft');
+                    if($foot.length < 1) return;
+                    if($foot.position().top + $foot.height() < winH){
+                        $foot.addClass('j_bottom');
+                    }else{
+                        $foot.removeClass('j_bottom');
+                    }
+
+                }
+                function examine(){
+                    var winH = $(window).height();
+                    var categorySpace = 10;
+                    var $iosDialog1 = $('#iosDialog1')
+                    var this_b,id_b,name
+                    //遍历申请加入分支列表
+                                        for (var i = 0; i < list.length;i++){
+                                                var provinceId = ""
+                                                var cityId = ""
+                                                for (var k=0;k<CHINA_CITY.length;k++){
+                                                    if(CHINA_CITY[k].value == list[i].provinceId){
+                                                        provinceId = CHINA_CITY[k].label
+                                                        for (var j=0;j < CHINA_CITY[k].children.length;j++){
+                                                            if(CHINA_CITY[k].children[j].value == list[i].cityId){
+                                                                cityId=  CHINA_CITY[k].children[j].label
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                console.log(provinceId,cityId)
+
+                                                html = `<li >
+                            <div class="weui-flex js_category "  onclick='getAge(this)'>
+                               <p class="weui-flex__item">${list[i].familyBranchAdminId == null ? "申请加入分支"  : '申请分支管理员'}</p>
+                                <img src="./images/icon_nav_nav.png" alt="">
+                            </div>
+                            <div class="page__category js_categoryInner">
+                                <div class="weui-form-preview">
+                                    <div class="weui-form-preview__hd">
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label"> ${list[i].familyBranchAdminId == null ? "申请被关联人"  : '申请分支'}</label>
+                                            <em class="weui-form-preview__value">${list[i].userName? list[i].userName :''}</em>
+                                        </div>
+                                    </div>
+                                    <div class="weui-form-preview__bd">
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label"> ${list[i].familyBranchAdminId == null ? "申请加入"  : '申请人'}</label>
+                                            <span class="weui-form-preview__value">${list[i].branchName ? list[i].branchName : ""}</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">地域</label>
+                                            <span class="weui-form-preview__value">${provinceId}/${cityId}</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">父亲名称</label>
+                                            <span class="weui-form-preview__value"> ${list[i].fatherName ? list[i].fatherName : ""}</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">曾用名</label>
+                                            <span class="weui-form-preview__value">${list[i].otherName ? list[i].otherName : ""}</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">出生地点</label>
+                                            <span class="weui-form-preview__value">${list[i].birthdayPlace ? list[i].birthdayPlace : ""}</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">申请时间</label>
+                                            <span class="weui-form-preview__value">${list[i].createTime}</span>
+                                        </div>
+                                        <div class="weui-form-preview__item">
+                                            <label class="weui-form-preview__label">注册人名字</label>
+                                            <span class="weui-form-preview__value">${list[i].nickName}</span>
+                                        </div>
+                                    </div>
+                                    <div class="weui-form-preview__ft">
+                                        <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:" data-id=${list[i].familyBranchAdminId == null ? list[i].familyMemberMappingId  : list[i].familyBranchAdminId}   data-name=${list[i].familyBranchAdminId == null ? "branch"  : 'Administrator'}>不同意</a>
+                                        <button type="submit"  class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:" data-id=${list[i].familyBranchAdminId == null ? list[i].familyMemberMappingId  : list[i].familyBranchAdminId}   data-name=${list[i].familyBranchAdminId == null ? "branch"  : 'Administrator'}>同意</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>`
+                                            dav_li += html;
+                                            // $('.abc').on('click',function () {
+                                            //     console.log("pppp")
+                                            // })
+                                        }
+
+
+
+                    $('#branch').append(dav_li)
+                    $('.js_item').on('click', function(){
+                        var id = $(this).data('id');
+                        // window.pageManager.go(id);
+                        $iosDialog1.fadeIn(200);
+                        console.log("sssss")
+                    });
+                    // $('.js_category').on('click', function(){
+                    //     var $this = $(this),
+                    //         $inner = $this.next('.js_categoryInner'),
+                    //         $page = $this.parents('.page'),
+                    //         $parent = $(this).parent('li');
+                    //     var innerH = $inner.data('height');
+                    //     // bear = $page;
+                    //     if(!innerH){
+                    //         $inner.css('height', 'auto');
+                    //         innerH = $inner.height();
+                    //         $inner.removeAttr('style');
+                    //         $inner.data('height', innerH);
+                    //     }
+                    //     if($parent.hasClass('js_show')){
+                    //         $parent.removeClass('js_show');
+                    //     }else{
+                    //         $parent.siblings().removeClass('js_show');
+                    //         $parent.addClass('js_show');
+                    //         if(this.offsetTop + this.offsetHeight + innerH > $page.scrollTop() + winH){
+                    //             var scrollTop = this.offsetTop + this.offsetHeight + innerH - winH + categorySpace;
+                    //             if(scrollTop > this.offsetTop){
+                    //                 scrollTop = this.offsetTop - categorySpace;
+                    //             }
+                    //             $page.scrollTop(scrollTop);
+                    //         }
+                    //     }
+                    //     var winH = $(window).height();
+                    //     var $foot = $('body').find('.page__ft');
+                    //     if($foot.length < 1) return;
+                    //     if($foot.position().top + $foot.height() < winH){
+                    //         $foot.addClass('j_bottom');
+                    //     }else{
+                    //         $foot.removeClass('j_bottom');
+                    //     }
+                    // });
+                    //同意审核
+
+                    $('.weui-form-preview__ft .weui-form-preview__btn_primary').on('click', function(){
+                        var this_a = $(this)
+                        var id = this_a.data('id');
+                        var name = this_a.data('name');
+                        //window.pageManager.go(id);
+                        console.log(id,name)
+                        if(name == 'branch'){
+                            ajaxPost(
+                                {
+                                    type: "POST",
+                                    url: "approvel",
+                                    data: {familyMemberMappingId: id},
+                                    success: function (data) {
+                                        if (data.statusCode == 200) {
+                                            console.log(data)
+                                            this_a.closest('li').remove();
+                                            weui.toast("提交成功！",1500)
+                                        } else {
+                                            weui.topTips(data.message, 1500);
+                                        }
+                                    }
+                                });
+                        }else if(name == 'Administrator'){
+                            ajaxPost(
+                                {
+                                    type: "POST",
+                                    url: "approvaledFamilyBranchAdminInfo",
+                                    data: {familyBranchAdminId: id},
+                                    success: function (data) {
+                                        if (data.statusCode == 200) {
+                                            console.log(data)
+                                            this_a.closest('li').remove();
+                                            weui.toast("提交成功！",1500)
+                                        } else {
+                                            weui.topTips(data.message, 1500);
+                                        }
+                                    }
+                                });
+                        }
+
+                    });
+                    //不同意审核
+                    $('.weui-form-preview__ft .weui-form-preview__btn_default').on('click', function(){
+                        this_b = $(this)
+                        id_b = this_b.data('id');
+                        name = this_b.data('name');
+                        $iosDialog1.fadeIn(200);
+                    });
+                    //弹出层取消
+                    $('#dialogs').on('click', '.cancel', function(){
+                        $(this).parents('.js_dialog').fadeOut(200);
+                    });
+                    //弹出层确定
+                    $('#dialogs').on('click', '.confirm', function(){
+                        var present_this = $(this)
+                        var message = $('.weui-textarea').val()
+                        console.log('1111')
+                        console.log(id_b,name)
+                        if(name == 'branch'){
+                            console.log('222')
+                            if(message){
+                                ajaxPost(
+                                    {
+                                        type: "POST",
+                                        url: "refuseApprovel",
+                                        data: {familyMemberMappingId: id_b,message:message},
+                                        success: function (data) {
+                                            if (data.statusCode == 200) {
+                                                present_this.parents('.js_dialog').fadeOut(200);
+                                                console.log(data)
+                                                this_b.closest('li').remove();
+                                                weui.toast("提交成功！",1500)
+                                                $('.weui-textarea').val("")
+                                            } else {
+                                                weui.topTips(data.message, 1500);
+                                            }
+                                        }
+                                    });
+                            }else {
+                                console.log('buton')
+                                weui.topTips("说明原因不能为空！", 1500);
+                            }
+                        }else if(name == 'Administrator'){
+                            if(message){
+                                ajaxPost(
+                                    {
+                                        type: "POST",
+                                        url: "refuseFamilyBranchAdminInfo",
+                                        data: {familyBranchAdminId: id_b,message:message},
+                                        success: function (data) {
+
+                                            if (data.statusCode == 200) {
+                                                present_this.parents('.js_dialog').fadeOut(200);
+                                                console.log(data)
+                                                this_b.closest('li').remove();
+                                                weui.toast("提交成功！",1500)
+                                            } else {
+                                                weui.topTips(data.message, 1500);
+                                            }
+                                        }
+                                    });
+                            }else {
+                                console.log('buton')
+                                weui.topTips("说明原因不能为空！", 1500);
+                            }
+                        }
+                    });
+
+                }
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.kingtrustcloud.familytree.swagger2.SwaggerAutoConfiguration

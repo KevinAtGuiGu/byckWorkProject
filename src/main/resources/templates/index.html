@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+	<base th:href="${#request.getContextPath()}+'/'">
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>族谱树</title>
+<link rel="stylesheet" href="assets/css/weui.min.css" />
+<link rel="stylesheet" href="assets/css/familytree.css" />
+<link type="text/css" rel="stylesheet" href="assets/css/jsmind.css" />
+</head>
+<body ontouchstart>
+	<div class="container" id="container">
+		<div class="page">
+			<div class="page__hd" style="margin-top: 50%">
+				<h1 class="page__title" style="text-align: center;">
+					<img src="./images/ts-logo.png" alt="WeUI" height="100px" />
+				</h1>
+				<p class="page__desc"  style="text-align: center;">待定开发中......</p>
+				<!--<div id="loadingToast" style="display:block;">-->
+					<!--<div class="weui-mask_transparent"></div>-->
+					<!--<div class="weui-toast">-->
+						<!--<i class="weui-loading weui-icon_toast"></i>-->
+						<!--<p class="weui-toast__content">加载中</p>-->
+					<!--</div>-->
+				<!--</div>-->
+			</div>
+		</div>
+		<script type="text/javascript">
+
+		</script>
+	<script src="assets/js/zepto.min.js"></script>
+	<script type="text/javascript" src="assets/js/jweixin-1.0.0.js"></script>
+	<script src="assets/js/weui.min.js"></script>
+	<script src="assets/js/familytree.js"></script>
+<script th:inline="javascript">
+	// var ctx = [[@{/}]];
+	// $(function() {
+	// 	$('.imgcode').click(function() {
+	// 		var url = "drawCaptcha?s=" + Math.random();
+	// 		$(".imgcode").attr("src", url);
+	// 	});
+	// 	$('#getCaptchaCode').on('click', function(){
+	// 		$('#captcha').fadeIn(200);
+	// 	});
+	// 	$("#showTooltips").on("click",function(){
+	// 		var phone=$('#phone').val();
+	// 		var smsCode=$('#js_input').val();
+	// 		var password1=$('#password1').val();
+	// 		var password2=$('#password2').val();
+	// 		var username=$('#username').val();
+	// 		var weuiAgreeCheckbox=$('#weuiAgreeCheckbox').val();
+	// 		if(!phone) {
+	// 			weui.topTips("请填写手机号", 3000);
+	// 			return;
+	// 		}
+	// 		if(!smsCode) {
+	// 			weui.topTips("请填写验证码", 3000);
+	// 			return;
+	// 		}
+	// 		if(!password1) {
+	// 			weui.topTips("请填写密码", 3000);
+	// 			return;
+	// 		}
+	// 		if(password2!=password1) {
+	// 			weui.topTips("确认密码跟密码不一致", 3000);
+	// 			return;
+	// 		}
+	// 		if(!username) {
+	// 			weui.topTips("请填写用户名", 3000);
+	// 			return;
+	// 		}
+	// 		if(!weuiAgreeCheckbox) {
+	// 			weui.topTips("请勾选《相关条款》", 3000);
+	// 			return;
+	// 		}
+	// 		var loading1 = weui.loading("加载中..");
+	// 		ajaxPost(
+	// 			{
+	// 				type:"POST",
+	// 				url: "register",
+	// 				data: {phone:phone,checkCode:smsCode,password:password1,username:username},
+	// 				success: function (data) {
+	// 					loading1.hide();
+	// 					if(data.statusCode==200){
+	// 						var $toast=$('#toast');
+	// 						$toast.fadeIn(100);
+	// 						setTimeout(function () {
+	// 							$toast.fadeOut(100);
+	// 							$("#captcha").fadeOut(200);
+	// 							location.href="familytree";
+	// 						}, 2000);
+	// 					}else{
+	// 						weui.topTips(data.message, 3000);
+	// 					}
+	// 				}
+	// 			});
+	// 	});
+	// });
+	// function submitCaptchaCode() {
+	// 	var code=$('#captcha_input').val();
+	// 	var phone=$('#phone').val();
+	// 	var loading1 = weui.loading("加载中..");
+	// 	ajaxPost(
+	// 		{
+	// 			type:"POST",
+	// 			url: "sendSms",
+	// 			data: {kaptchaCode:code,phone:phone},
+	// 			success: function (data) {
+	// 				loading1.hide();
+	// 				if(data.statusCode==200){
+	// 					$('#js_input').val(data.data);
+	// 					var $toast=$('#toast');
+	// 					$toast.fadeIn(100);
+	// 					setTimeout(function () {
+	// 						$toast.fadeOut(100);
+	// 						$("#captcha").fadeOut(200);
+	// 					}, 2000);
+	// 				}else{
+	// 					weui.topTips(data.message, 3000);
+	// 				}
+	// 			}
+	// 		});
+	// }
+
+
+</script>
+</body>
+</html>

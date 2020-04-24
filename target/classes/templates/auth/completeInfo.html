@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="tpl_completeInfo">
+    <div class="page">
+        <div class="weui-form">
+            <div class="weui-form__control-area">
+                <div class="weui-cells__group weui-cells__group_form">
+                    <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">家族</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" placeholder="请选择家族" id="tpl_completeInfo_family"/>
+                            </div>
+                            <div class="weui-cell__ft tpl_completeInfo_family_reset" style="display: none;">
+                                <button class="weui-btn_reset weui-btn_icon">
+                                    <i id="tpl_completeInfo_family_reset" class="iconfont icon-icon-cross-empty"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active" id="familyBasic_cell">
+                            <div class="weui-cell__hd"><label class="weui-label">辈份</label></div>
+                            <div class="weui-cell__bd weui-flex">
+                                <input class="weui-input" placeholder="请选择辈份" name="familyBasic" id="tpl_completeInfo_familyBasic" />
+                            </div>
+                            <div class="weui-cell__ft tpl_completeInfo_familyBasic_reset" style="display: none;">
+                                <button class="weui-btn_reset weui-btn_icon">
+                                    <i id="tpl_completeInfo_familyBasic_reset" class="iconfont icon-icon-cross-empty"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+                            <div class="weui-cell__bd weui-flex">
+                                <input name="userName" class="weui-input" id="tpl_completeInfo_userName" placeholder="填写本人姓名" required emptyTips="请输入姓名" notMatchTips="请输入正确的姓名" />
+                            </div>
+                            <div class="weui-cell__ft tpl_completeInfo_userName_reset" style="display: none;">
+                                <button class="weui-btn_reset weui-btn_icon">
+                                    <i id="tpl_completeInfo_userName_reset" class="iconfont icon-icon-cross-empty"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">地区选择</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input autofocus class="weui-input" disabled="true" id="tpl_completeInfo_city" placeholder="请选择所在地"/>
+                            </div>
+                            <div class="weui-cell__ft address" style="padding-left:2px;display: none;">
+                                <button class="weui-btn_reset weui-btn_icon">
+                                    <i id="address" class="iconfont icon-icon-cross-empty"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-form__opr-area">
+                <a class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" id="completeInfo_submit">确定</a>
+            </div>
+
+            <div id="js_toast" style="display: none;">
+                <div class="weui-mask_transparent"></div>
+                <div class="weui-toast">
+                    <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                    <p class="weui-toast__content">操作成功！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        $(function () {
+            var familyList=[];
+            var family_pickerDefault;
+            var familyBasicList=[];
+            var familyBasic_pickerDefault;
+            var city_picker_ids = [];
+            ajaxPost(
+                {
+                    type: "GET",
+                    url: "listFamily",
+                    data: {},
+                    success: function (data) {
+                        if (data.statusCode == 200) {
+                            for(var i=0;i<data.data.length;i++) {
+                                familyList.push({
+                                    "label":data.data[i].familyName,
+                                    "value":data.data[i].familyId
+                                });
+                            }
+                            if(familyList.length>0) {
+                                family_pickerDefault = familyList[0].value;
+                            }
+                            $('#tpl_completeInfo_family').on('click', function () {
+                                weui.picker(familyList, {
+                                    title: '家族选择',
+                                    id: 'tpl_completeInfo_family',
+                                    defaultValue: [family_pickerDefault],
+                                    onChange: function (result) {
+                                    },
+                                    onConfirm: function (result) {
+                                        family_pickerDefault = result[0].value;
+                                        $('#tpl_completeInfo_family').val(result[0].label);
+                                        $('.tpl_completeInfo_family_reset').show()
+                                        showed();
+                                        // 加载家族辈份
+                                        loadFamilyBasic(family_pickerDefault);
+                                    }
+                                });
+                            });
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                });
+
+            function loadFamilyBasic(familyId) {
+                ajaxPost(
+                    {
+                        type: "GET",
+                        url: "getAllFamilyBasics",
+                        data: {familyId:familyId},
+                        success: function (data) {
+                            if (data.statusCode == 200) {
+                                for(var i=0;i<data.data.length;i++) {
+                                    familyBasicList.push({
+                                        "label":data.data[i].familyBasicName,
+                                        "value":data.data[i].familyBasicId
+                                    });
+                                }
+                                if(familyBasicList.length>0) {
+                                    familyBasic_pickerDefault = familyBasicList[0].value;
+                                }
+                                $('#tpl_completeInfo_familyBasic').on('click', function () {
+                                    weui.picker(familyBasicList, {
+                                        title: '家族辈份选择',
+                                        id: 'tpl_completeInfo_familyBasic',
+                                        defaultValue: [familyBasic_pickerDefault],
+                                        onChange: function (result) {
+                                        },
+                                        onConfirm: function (result) {
+                                            familyBasic_pickerDefault = result[0].value;
+                                            $('#tpl_completeInfo_familyBasic').val(result[0].label);
+                                            $('.tpl_completeInfo_familyBasic_reset').show()
+                                            showed();
+                                        }
+                                    });
+                                });
+                            } else {
+                                weui.topTips(data.message, 3000);
+                            }
+                        }
+                    });
+            }
+
+            $('#tpl_completeInfo_city').on('click', function () {
+                weui.picker(CHINA_CITY, {
+                    title: '地区选择',
+                    id: 'tpl_completeInfo_city',
+                    depth: 3,
+                    defaultValue: city_picker_ids,
+                    onChange: function (result) {
+                    },
+                    onConfirm: function (result) {
+                        var value = '';
+                        city_picker_ids = [];
+                        for (var i = 0; i < result.length; i++) {
+                            value = value + ' ' + result[i].label;
+                            city_picker_ids.push(result[i].value);
+                        }
+                        $('#tpl_completeInfo_city').val(value);
+                        $('.address').show()
+                        showed()
+                    },
+                });
+            });
+            $('#address').on('click',function(){
+                $(" #tpl_completeInfo_city ").val("")
+                $('.address').hide()
+                city_picker_ids = []
+                showed()
+            });
+
+            $("#completeInfo_submit").on("click", function () {
+                var param = {
+                    familyId: family_pickerDefault,
+                    familyBasic:familyBasic_pickerDefault,
+                    userName:$('#tpl_completeInfo_userName').val(),
+                    provinceId: city_picker_ids[0] ? city_picker_ids[0]:null,
+                    cityId: city_picker_ids[1] ? city_picker_ids[1]:null ,
+                    districtId: city_picker_ids[2] ? city_picker_ids[2]:null ,
+                };
+                if (!param.familyId) {
+                    weui.topTips("请选择家族", 3000);
+                    return;
+                }
+                if (!param.familyBasic) {
+                    weui.topTips("请选择辈份", 3000);
+                    return;
+                }
+                if (!param.userName) {
+                    weui.topTips("请填写姓名", 3000);
+                    return;
+                }
+                var loading1 = weui.loading("加载中..");
+                ajaxPost(
+                    {
+                        type: "POST",
+                        url: "completeInfo",
+                        data: param,
+                        success: function (data) {
+                            loading1.hide();
+                            if (data.statusCode == 200) {
+                                var $toast = $('#js_toast');
+                                $toast.fadeIn(100);
+                                setTimeout(function () {
+                                    $toast.fadeOut(100);
+                                    window.location.hash = 'searchFamilyBranch';
+                                }, 1000);
+                            } else {
+                                weui.topTips(data.message, 3000);
+                            }
+                        }
+                    });
+            });
+
+            $('#tpl_completeInfo_family_reset').on('click',function(){
+                $(" #tpl_completeInfo_family ").val("")
+                $('.tpl_completeInfo_family_reset').hide()
+                family_pickerDefault = []
+                showed()
+            });
+
+            $('#tpl_completeInfo_family').on('input',function () {
+                if ($('#tpl_completeInfo_family').val()) {
+                    $('.tpl_completeInfo_family_reset').show()
+                }else {
+                    $('.tpl_completeInfo_family_reset').hide()
+                }
+                showed()
+            });
+
+            $('#tpl_completeInfo_familyBasic_reset').on('click',function(){
+                $(" #tpl_completeInfo_familyBasic ").val("")
+                $('.tpl_completeInfo_familyBasic_reset').hide()
+                familyBasic_pickerDefault = []
+                showed()
+            });
+
+            $('#tpl_completeInfo_familyBasic').on('input',function () {
+                if ($('#tpl_completeInfo_familyBasic').val()) {
+                    $('.tpl_completeInfo_familyBasic_reset').show()
+                }else {
+                    $('.tpl_completeInfo_familyBasic_reset').hide()
+                }
+                showed()
+            });
+
+            $('#tpl_completeInfo_userName').on('input',function () {
+                if ($('#tpl_completeInfo_userName').val()) {
+                    $('.tpl_completeInfo_userName_reset').show()
+                }else {
+                    $('.tpl_completeInfo_userName_reset').hide()
+                }
+                showed()
+            });
+
+            $('#tpl_completeInfo_userName_reset').on('click',function(){
+                $(" #tpl_completeInfo_userName ").val("")
+                $('.tpl_completeInfo_userName_reset').hide()
+                showed()
+            });
+            //判断按钮是否高亮是否可以点击
+            function showed() {
+                if($('#tpl_completeInfo_family').val() && $('#tpl_completeInfo_familyBasic').val() &&  $('#tpl_completeInfo_userName').val()){
+                    $('#completeInfo_submit').removeClass('weui-btn_disabled');
+                }else {
+                    $('#completeInfo_submit').addClass('weui-btn_disabled');
+                }
+            }
+        });
+
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingtrustcloud.familytree.mapper.FamilyBranchAdminMapper">
+
+    <select id="listFamilyBranchAdminInfo" parameterType="collection" resultType="com.kingtrustcloud.familytree.vo.FamilyBranchAdminVO">
+        select mbi.user_name userName,mbi.family_name familyName,mbi.other_name otherName,mbi.address address,mbi.province_id provinceId,mbi.city_id cityId,mbi.birthday_place birthdayPlace,mbi.member_id memberId,
+        fbranch.family_branch_id familyBranchId,fbranch.branch_name branchName,fba.family_branch_admin_id familyBranchAdminId,fba.create_time createTime
+        from family_branch_admin fba left join member_basic_info mbi on fba.member_id=mbi.member_id
+        left join family_branch fbranch  on fba.family_branch_id = fbranch.family_branch_id
+        where fba.status_id=0 and fba.is_delete=0 and mbi.is_delete=0 and fbranch.is_delete=0
+        <foreach collection="list" item="item" separator="," open=" and fba.family_branch_admin_id in (" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="updateIsDeleteByMemberIdAndFamilyBranchId">
+        update family_branch_admin set is_delete=true where member_id=#{memberId} and family_branch_id=#{familyBranchId}
+    </update>
+
+</mapper>

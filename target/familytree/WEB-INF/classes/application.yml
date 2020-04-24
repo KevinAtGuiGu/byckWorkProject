@@ -1,0 +1,89 @@
+server:
+  port: 8888
+  session-timeout: 1800
+  tomcat:
+    max-threads: 1000
+    min-spare-threads: 30
+    uri-encoding: utf-8
+  servlet:
+    context-path: /
+    session:
+      timeout: 30m
+  compression:
+    enabled: true
+    min-response-size: 2048
+    mime-types:
+      - image/png
+      - image/jpeg
+      - image/jpg
+      - text/html
+      - application/javascript
+      - text/css
+      - application/json
+      - text/xml
+      - text/plain
+#security:
+#  basic:
+#    enabled: false
+spring:
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles: 
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 10000000
+      max-request-size: 10000000
+  devtools:
+    restart:
+      enabled: true
+#cache的session默认处理方式是echcache缓存，如用session共享时，则启用type是redis
+#  cache:
+#    type: redis
+
+familytree:
+  #最大并发数
+  maxCount: 10000
+  # swagger2配置
+  swagger:
+    enabled: true
+    production: false
+  loginUrl: /login
+  ignoreUrls:
+    - /login
+    - /register
+    - /drawCaptcha
+    - /sendSms
+    - /swagger-resources
+    - /forgetPassword
+    - /newPassword
+    - /loginAccountAndPassword
+  wxUrls:
+    - /wxapi
+
+wx:
+  mp:
+    appId: wx70670710d9335112
+    secret: 09756006d57c62275e6e8ecf3cf98cdb
+    token: familytree
+    aesKey: ACs2kPTTg6LSvUXkAEGAAcDJ0vnUpQ8n7JYcvy75E5x
+
+sms:
+  tencent:
+    secretid: AKIDpjPURgGBUfjgj0e1xmeXMyayJSSCHgaI
+    secretkey: mfKkupiXXJ8kAKF2bncq78uRaVVhlbBb
+    appid: 1400326928
+    appkey: b0551362fb32849ad46891360891db44
+    #269592
+    sign: 紫荆堂田氏族谱
+    # 注册验证码  您的注册验证码：{1}，如非本人操作，请忽略本短信！
+    templateid: 548448
+
+
+
+
+

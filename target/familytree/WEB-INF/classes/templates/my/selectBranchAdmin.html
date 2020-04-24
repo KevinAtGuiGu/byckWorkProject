@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 开始选择分支管理员页面 -->
+<div th:fragment="tpl_selectBranchAdmin">
+    <div class="page">
+        <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+        </div>
+        <div class="searchbar-result" id="searchResult">
+            <div class="weui-form">
+                <div class="weui-form__control-area">
+                    <div class="weui-cells__group weui-cells__group_form">
+                        <div class="weui-cells weui-cells_checkbox" id="checkBoxsBranch">
+                            <!--  <label class="weui-cell weui-cell_active weui-check__label" for="s11">
+                                  <div class="weui-cell__hd">
+                                      <input type="checkbox" class="weui-check" name="checkbox1" id="s11" >
+                                      <i class="weui-icon-checked"></i>
+                                  </div>
+                                  <div class="weui-cell__bd">
+                                      <p>朝进裔孙起观</p>
+                                  </div>
+                                  <a href="#tree" class="gotree">查看</a>
+                              </label>-->
+                            <!--  <label class="weui-cell weui-cell_active weui-check__label" for="s12">
+                                  <div class="weui-cell__hd">
+                                      <input type="checkbox" name="checkbox1" class="weui-check" id="s12">
+                                      <i class="weui-icon-checked"></i>
+                                  </div>
+                                  <div class="weui-cell__bd">
+                                      <p>朝进裔孙起观</p>
+                                  </div>
+                                  <a href="#tree" class="gotree">查看</a>
+                              </label>-->
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="weui-form__opr-area">
+                    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var selectBranchAdmin = [];
+        var hasSelect = [];
+
+        function listSelectBranchAdminVO() {
+            // 获取此分支成员列表
+            ajaxPost(
+                {
+                    type: "GET",
+                    url: "listSelectBranchAdminVO",
+                    data: {familyBranchId: branchlist.familyBranchId},
+                    success: function (data) {
+                        if (data.statusCode == 200) {
+                            if (data.data) {
+                                selectBranchAdmin = data.data;
+                                renderSelectBranchAdmin(selectBranchAdmin);
+                            }
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                });
+        }
+
+        function renderSelectBranchAdmin(selectBranchAdmin) {
+            var renderHtml = '';
+            for (var i = 0; i < selectBranchAdmin.length; i++) {
+                renderHtml += `<label class="weui-cell weui-cell_active weui-check__label ischecked" for=${selectBranchAdmin[i].memberId}>
+                                 <div class="weui-cell__hd">
+                                     <input type="checkbox" class="weui-check" name="checkbox1" id=${selectBranchAdmin[i].memberId} >
+                                     <i class="weui-icon-checked"></i>
+                                 </div>
+                                 <div class="weui-cell__bd">
+                                     <p>${selectBranchAdmin[i].userName} ${selectBranchAdmin[i].account ? selectBranchAdmin[i].account : ''}</p>
+                                 </div>
+                             </label>`;
+            }
+            $("#checkBoxsBranch").html(renderHtml);
+            $('.ischecked').on('click', function () {
+                var isshow = $(this).children("div:first-child").children("input").is(':checked');
+                var index = $(this).index();
+                if (!isshow) {
+                    $(this).children("div:first-child").children("input").attr('checked', 'true');
+                    hasSelect.push(selectBranchAdmin[index]);
+                } else {
+                    $(this).children("div:first-child").children("input").removeAttr('checked');
+                    for (var i = 0; i < hasSelect.length; i++) {
+                        if (hasSelect[i] === selectBranchAdmin[index]) {
+                            hasSelect.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#showTooltips').on('click', function () {
+            for (var i = 0; i < hasSelect.length; i++) {
+                var exist = false;
+                for (var j = 0; j < branch_admin_list.length; j++) {
+                    if (branch_admin_list[j].memberId == hasSelect[i].memberId) {
+                        exist = true;
+                        if(branch_admin_list[j].isDelete) {
+                            branch_admin_list[j].isDelete=false;
+                        }
+                    }
+                }
+                if (!exist) {
+                    branch_admin_list.push({
+                        memberId:hasSelect[i].memberId,
+                        isDelete:false,
+                        account:hasSelect[i].account,
+                        userName:hasSelect[i].userName,
+                    });
+                }
+            }
+            renderBranchAdmin(branch_admin_list);
+            history.go(-1);
+        });
+
+        $(function () {
+            listSelectBranchAdminVO();
+        });
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="tpl_form">
+    <div class="page">
+        <div class="fixed-b">
+            <a href="javascript:" class="weui-btn weui-btn_primary editUser">编辑用户</a>
+        </div>
+    <form id="editForm">
+        <input type="hidden" name="parentMemberId" value="0">
+        <input type="hidden" name="memberId" value="0">
+        <input type="hidden" name="mateId">
+        <input type="hidden" name="groupId">
+        <div class="page slideIn">
+            <div class="weui-form">
+                <div class="weui-form__control-area">
+                    <div class="weui-cells__group weui-cells__group_form">
+                        <div class="weui-cells__title">详细资料</div>
+                        <div class="weui-cells weui-cells_form">
+                            <div class="weui-cell weui-cell_uploader" id="uploader">
+                                <!--<div class="weui-cell__hd"><label class="weui-label">头像</label></div>-->
+                                <!--<div class="weui-cell__bd" >-->
+                                    <!--<div class="weui-uploader__bd">-->
+                                        <!--<ul class="weui-uploader__files" id="uploaderFiles">-->
+                                        <!--</ul>-->
+                                        <!--<input type="hidden" name="headThumb">-->
+                                        <!--<div class="weui-uploader__input-box">-->
+                                            <!--<input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple/>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+
+                                    <div class="weui-cell__hd"><label class="weui-label">头像</label></div>
+                                    <div class="weui-cell__bd img-load" >
+                                        <ul class="weui-uploader__files" >
+                                        </ul>
+                                        <input type="hidden" name="headThumb">
+                                        <div class="weui-uploader__input-box">
+                                            <input name="uploaderInput" id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="weui-cell">
+                                <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input name="userName" class="weui-input" placeholder="填写本人姓名" required emptyTips="请输入姓名" notMatchTips="请输入正确的姓名" />
+                                </div>
+                            </div>
+                            <div class="weui-cell weui-cell_active weui-cell_access weui-cell_select weui-cell_select-after">
+                                <div class="weui-cell__hd"><label class="weui-label">性别</label></div>
+                                <div class="weui-cell__bd" id="showPickerGender">
+                                    <label id="genderLabel"></label>
+                                    <input type="hidden" name="genderId" value="0">
+                                </div>
+                            </div>
+                            <div class="weui-cell">
+                                <div class="weui-cell__hd"><label class="weui-label">联系电话</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input name="mobileNo" class="weui-input" placeholder="填写绑定的电话号码" type="number" pattern="[0-9]*" />
+                                </div>
+                            </div>
+                            <div class="weui-cell">
+                                <div class="weui-cell__hd"><label class="weui-label">家谱名</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input name="familyName" class="weui-input" placeholder="家谱中的名字"/>
+                                </div>
+                            </div>
+                            <div class="weui-cell" style="display: none" id="familyBasic_cell">
+                                <div class="weui-cell__hd"><label class="weui-label">辈份</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input class="weui-input" placeholder="请选择辈份" name="familyBasic" id="familyBasic" />
+                                </div>
+                            </div>
+                            <div class="weui-cell">
+                                <div class="weui-cell__hd"><label class="weui-label">曾用名</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input name="otherName" class="weui-input" placeholder="曾经用过的名字"/>
+                                </div>
+                            </div>
+                            <div class="weui-cell">
+                                <div class="weui-cell__hd"><label class="weui-label">身份证</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input name="idCardNo" class="weui-input" placeholder="填写本人身份证号码"/>
+                                </div>
+                            </div>
+                            <div class="weui-cell weui-cell_active weui-cell_access weui-cell_select weui-cell_select-after" id="showDatePickerBirthday">
+                                <div class="weui-cell__hd"><label class="weui-label">出生日期</label></div>
+                                <div class="weui-cell__bd" id="showDatePickerBirthday">
+                                    <label id="birthdayLabel">0000-00-00</label>
+                                    <input type="hidden" name="birthday" value="0">
+                                </div>
+
+                                <!--<div class="weui-cell__bd">出生日期</div>-->
+
+                                <!--<label id="birthdayLabel"></label>-->
+                                <!--<div class="weui-cell__ft"></div>-->
+                                <!--<input type="hidden" name="birthday">-->
+                            </div>
+                            <div class="weui-cell">
+                                <div class="weui-cell__hd"><label class="weui-label">出生地点</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input name="birthPlace" class="weui-input" placeholder="填写本人出生地点"/>
+                                </div>
+                            </div>
+                            <div class="weui-cell weui-cell_switch">
+                                <div class="weui-cell__bd">是否离世</div>
+                                <div class="weui-cell__ft">
+                                    <input id="isDeadChk" class="weui-switch" type="checkbox"/>
+                                    <input name="isDead"  type="hidden" value="0"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="dead_area" style="display: none">
+                            <div class="weui-cell weui-cell_active weui-cell_access weui-cell_select weui-cell_select-after">
+                                <div class="weui-cell__hd"><label class="weui-label">死亡日期</label></div>
+                                <div class="weui-cell__bd" id="showDatePickerDeadDate">
+                                    <label id="deadDateLabel">0000-00-00</label>
+                                    <input type="hidden" name="deadDate" value="0">
+                                </div>
+                            </div>
+                            <div class="weui-cell">
+                                <div class="weui-cell__hd"><label class="weui-label">死亡地点</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input name="deadPlace" class="weui-input" placeholder="填写死亡地点"/>
+                                </div>
+                            </div>
+                            <div class="weui-cell">
+                                <div class="weui-cell__hd"><label class="weui-label">埋葬地点</label></div>
+                                <div class="weui-cell__bd weui-flex">
+                                    <input name="tombPlace" class="weui-input" placeholder="填写埋葬地点"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <br/>
+                <div class="weui-form__opr-area" id="saveBtn">
+                    <a class="weui-btn weui-btn_primary" href="javascript:" id="userSubmit">确定</a>
+                    <a href="javascript:;" class="weui-btn weui-btn_default" id="cancel">取消</a>
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <div class="weui-gallery" id="gallery">
+        <span class="weui-gallery__img" id="galleryImg"></span>
+        <div class="weui-gallery__opr">
+            <a href="javascript:" class="weui-gallery__del" style="color: #fff">
+                <!--<i class="weui-icon-delete weui-icon_gallery-delete"></i>-->
+                更换头像
+            </a>
+        </div>
+    </div>
+        <!--取消编辑-->
+        <div id="dialogs1">
+            <!--BEGIN dialog1-->
+            <div class="js_dialog" id="Dialog" style="display: none;">
+                <div class="weui-mask"></div>
+                <div class="weui-dialog">
+                    <div class="weui-dialog__hd"><strong class="weui-dialog__title">取消编辑</strong></div>
+                    <div class="weui-dialog__bd">当前修改不保存，是否取消？</div>
+                    <div class="weui-dialog__ft">
+                        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default quxiao">取消</a>
+                        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary quedin">确定</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    var loading1 = weui.loading("加载中..");
+    // var url = location.search.replace("?","").replace("&","=").split("=")
+    // var memberId=url[1];
+    // var familyBranchId=url[3]
+
+
+        //同上
+        // var urlData = JSON.parse('{"' + location.search.replace("?","").replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+        var form_urlData = JSON.parse(sessionStorage.getItem("someId"));
+        var form_memberId = form_urlData.memberId;
+        var familyBranchId = form_urlData.familyBranchId;
+        var isMe = [[${session.user.memberBasicInfoEntity.memberId}]];
+        var isAdmin = [[${session.user.userRole == '分支管理员'}]];
+        var isSuperAdmin = [[${session.user.userRole == '超级管理员'}]];
+        console.log(isSuperAdmin);
+
+        $(function () {
+            if (form_urlData.relation || form_urlData.body) {
+                canEdit()
+                console.log('这是新增')
+                loading1.hide()
+            } else {
+                ajax()
+                noEdit()
+                if (!(isAdmin || isSuperAdmin || isMe == form_urlData.mmemberId)) {
+                    $('.editUser').parent().css({'display':'none'})
+                }
+            }
+
+
+        //进入编辑状态(本人，分支管理员，超级管理员)
+        // if(登录的用户是本人/分支管理员/超级管理员){
+        //     $('.editUser').css('display','block')
+        // }
+        $('.editUser').on('click', function (){
+            canEdit()
+            $(".page").scrollTop(10)
+        }),
+
+            //取消编辑
+            $('#cancel').on('click',function () {
+                $('#Dialog').fadeIn(200);
+
+            })
+            //取消确认
+            $('#dialogs1').on('click', '.quxiao', function(){
+                $(this).parents('.js_dialog').fadeOut(200);
+            });
+            //确定退出登录
+            $('#dialogs1').on('click', '.quedin', function(){
+                $(this).parents('.js_dialog').fadeOut(200);
+                weui.toast("退出编辑模式",1500)
+                $('.editUser').parent().css('display','block')
+                noEdit()
+            });
+
+
+            //原上传头像
+            var $gallery = $("#gallery"),
+                $galleryImg = $("#galleryImg"),
+                $uploaderFiles = $(".weui-uploader__files")
+            ;
+            $uploaderFiles.on("click", "li", function(){
+                $galleryImg.attr("style", this.getAttribute("style"));
+                $gallery.fadeIn(100);
+            });
+            $gallery.on("click", function(){
+                $gallery.fadeOut(100);
+                $uploaderFiles.find("li").remove();
+                $(".weui-uploader__input-box").show();
+                $("#uploaderInput").trigger('click')
+
+            });
+            $(".weui-icon_gallery-delete").on("click",function(){
+                $uploaderFiles.find("li").remove();
+                $(".weui-uploader__input-box").show();
+
+            });
+            weui.uploader('#uploader', {
+                url: 'member/upload',
+                auto: false,
+                type: 'base64',
+                fileVal: 'fileVal',
+                compress: {
+                    width: 350,
+                    height: 350,
+                    quality: .7
+                },
+
+                onBeforeQueued: function(files) {
+                    // `this` 是轮询到的文件, `files` 是所有文件
+                    if(["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0){
+                        weui.alert('请上传图片');
+                        return false; // 阻止文件添加
+                    }
+                    // if(this.size > 1024 * 1024){
+                    //     weui.alert('请上传不超过1M的图片');
+                    //     return false;
+                    // }
+                    if (files.length > 1) { // 防止一下子选择过多文件
+                        weui.alert('最多只能上传1张图片，请重新选择');
+                        return false;
+                    }
+
+                    // imgLoad(files)
+                    // console.log("说明嘛",files)
+                },
+                onQueued: function(){
+                    // imgLoad(this)
+                    $(".weui-uploader__input-box").hide();
+                    $("[name='headThumb']").val(this.base64);
+
+                },
+                onBeforeSend: function(data, headers){
+
+                },
+                onProgress: function(procent){
+                },
+                onSuccess: function (ret) {
+                    $("[name='headThumb']").val(this.base64);
+                },
+                onError: function(err){
+                }
+            });
+
+            //头像Lin
+            // var tmpl = '<li class="weui-uploader__file" style="background-image:url(#url#)"></li>',
+            //     $gallery = $("#gallery"), $galleryImg = $("#galleryImg"),
+            //     $uploaderInput = $("#uploaderInput"),
+            //     $uploaderFiles = $("#uploaderFiles")
+            // ;
+            //
+            // $uploaderInput.on("change", function(e){
+            //     var src, url = window.URL || window.webkitURL || window.mozURL, files = e.target.files;
+            //     for (var i = 0, len = files.length; i < len; ++i) {
+            //         var file = files[i];
+            //
+            //         if (url) {
+            //             src = url.createObjectURL(file);
+            //             console.log('123',src)
+            //         } else {
+            //             src = e.target.result;
+            //             console.log(src)
+            //
+            //         }
+            //
+            //         $uploaderFiles.append($(tmpl.replace('#url#', src)));
+            //     }
+            // });
+            // $uploaderFiles.on("click", "li", function(){
+            //     $galleryImg.attr("style", this.getAttribute("style"));
+            //     $gallery.fadeIn(100);
+            // });
+            // $gallery.on("click", function(){
+            //     $gallery.fadeOut(100);
+            // });
+
+        //性别
+        $('#showPickerGender').on('click', function () {
+            weui.picker([{
+                label: '男',
+                value: 0
+            }, {
+                label: '女',
+                value: 1
+            }], {
+                onChange: function (result) {
+                    console.log('000',result);
+                },
+                onConfirm: function (result) {
+                    console.log('010',result);
+                    // console.log(result[0].label);
+
+                    // $('#showPickerGender > .weui-cell__ft').text(gender)
+                    $("input[name='genderId']").val(result[0].value);
+                    $("#genderLabel").text(result[0].label);
+                },
+                title: '请选择性别'
+            });
+        });
+
+        //是否离世
+            $("#isDeadChk").on("change",function(){
+                if($(this).is(":checked")){
+                    $("#dead_area").show();
+                    $("input[name='isDead']").val(1);
+                }else{
+                    $("#dead_area").hide();
+                    $("input[name='isDead']").val(0);
+                }
+
+            });
+        //出生日期
+            $('#showDatePickerBirthday').on('click', function () {
+                weui.datePicker({
+                    start: 1990,
+                    end: new Date().getFullYear(),
+                    onChange: function (result) {
+                        console.log(result);
+                    },
+                    onConfirm: function (result) {
+                        $("#birthdayLabel").html(result[0].value + '-' + result[1].value + '-' + result[2].value);
+                        $("input[name='birthday']").val(result[0].value + '-' + result[1].value + '-' + result[2].value);
+                    },
+                    title: '请选择日期'
+                });
+            });
+            //死亡日期
+            $('#showDatePickerDeadDate').on('click', function () {
+                weui.datePicker({
+                    start: 1990,
+                    end: new Date().getFullYear(),
+                    onChange: function (result) {
+                        console.log(result);
+                    },
+                    onConfirm: function (result) {
+                        $("#deadDateLabel").html(result[0].value + '-' + result[1].value + '-' + result[2].value);
+                        $("input[name='deadDate']").val(result[0].value + '-' + result[1].value + '-' + result[2].value);
+                    },
+                    title: '请选择日期'
+                });
+            });
+
+            //确认请求
+            $('#userSubmit').on('click', function () {
+                var userName = $("input[name='userName']").val()
+                var genderId = $("input[name='genderId']").val()
+                var mobileNo = $("input[name='mobileNo']").val()
+                var familyName = $("input[name='familyName']").val()
+                var otherName = $("input[name='otherName']").val()
+                var idCardNo = $("input[name='idCardNo']").val()
+                var birthday = $("input[name='birthday']").val()
+                var birthdayPlace = $("input[name='birthPlace']").val()
+                var isDead = $("input[name='isDead']").val();
+                //死亡地点
+                var deadDate = $("input[name='deadDate']").val()
+                //埋葬地点
+                var deadPlace = $("input[name='deadPlace']").val()
+                //死亡时间
+                var tombPlace = $("input[name='tombPlace']").val();
+                var headThumb = $("input[name='headThumb']").val();
+                if (form_urlData.relation) {
+                    //添加成员
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "/member/saveMember",
+                            data: {
+                                relation: form_urlData.relation,
+                                mmemberId: form_memberId,
+                                familyId: form_urlData.familyId,
+                                familyBranchId: familyBranchId,
+                                userName: userName,
+                                genderId: genderId,
+                                mobileNo: mobileNo,
+                                familyName: familyName,
+                                otherName: otherName,
+                                idCardNo: idCardNo,
+                                birthday: birthday,
+                                birthdayPlace: birthdayPlace,
+                                isDead: isDead,
+                                deadDate: deadDate,
+                                deadPlace: deadPlace,
+                                tombPlace: tombPlace,
+                                headThumb: headThumb
+                            },
+                            success: function (data) {
+                                loading1.hide();
+                                if (data.statusCode == 200) {
+                                    weui.toast("新增成功")
+                                    reLoadTree()
+                                } else {
+                                    weui.topTips(data.message, 3000);
+
+                                }
+                            }
+                        });
+                } else if (form_urlData.body) {
+                    //添加全新成员
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "/member/saveMember2",
+                            data: {
+                                familyId: form_urlData.familyId,
+                                familyBranchId: form_urlData.familyBranchId,
+                                userName: userName,
+                                genderId: genderId,
+                                mobileNo: mobileNo,
+                                familyName: familyName,
+                                otherName: otherName,
+                                idCardNo: idCardNo,
+                                birthday: birthday,
+                                birthdayPlace: birthdayPlace,
+                                isDead: isDead,
+                                deadDate: deadDate,
+                                deadPlace: deadPlace,
+                                tombPlace: tombPlace,
+                                familyBasicId: familyBasicId,
+                                headThumb: headThumb
+                            },
+                            success: function (data) {
+                                loading1.hide();
+                                if (data.statusCode == 200) {
+                                    weui.toast("新增成功")
+                                    $('.noBody').css('display', 'none')
+                                    reLoadTree()
+                                } else {
+                                    weui.topTips(data.message, 3000);
+
+                                }
+                            }
+                        });
+                } else {
+                    //修改请求
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "/member/saveMember",
+                            data: {
+                                memberId: form_memberId,
+                                familyBranchId: familyBranchId,
+                                userName: userName,
+                                genderId: genderId,
+                                mobileNo: mobileNo,
+                                familyName: familyName,
+                                otherName: otherName,
+                                idCardNo: idCardNo,
+                                birthday: birthday,
+                                birthdayPlace: birthdayPlace,
+                                isDead: isDead,
+                                deadDate: deadDate,
+                                deadPlace: deadPlace,
+                                tombPlace: tombPlace,
+                                headThumb: headThumb
+                            },
+                            success: function (data) {
+                                loading1.hide();
+                                if (data.statusCode == 200) {
+                                    weui.toast("修改成功")
+                                    //更新树页面
+                                    var idNum = '#' + memberId
+                                    reLoadTree()
+
+                                } else {
+                                    weui.topTips(data.message, 3000);
+
+                                }
+                            }
+                        });
+                }
+
+            })
+        })
+
+        //成功获取成员接口需要执行
+        function reLoadTree() {
+            var jsMindData = [];
+            ajaxPost(
+                {
+                    type: "GET",
+                    url: "member/getMembersByFamilyBranchId",
+                    data: {familyBranchId: form_urlData.familyBranchId},
+                    success: function (data) {
+                        if (data.statusCode == 200) {
+                            sourceData = data.data
+                            extraName(data.extra)
+                            jsMindData = formatData(sourceData);
+                            $('#jsmind_container').empty()
+                            load_jsmind(jsMindData);
+                            $('#cloneiosDialog1').css({
+                                "opacity": "0",
+                                "display": "none"
+                            })
+                            window.sessionStorage.removeItem('someId');
+                            setTimeout(function () {
+                                history.go(-1);
+                            }, 2000);
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                });
+
+        }
+
+        //不可编辑模式
+        function noEdit() {
+            console.log('不可以编辑')
+            $('input').attr('readonly', 'readonly')
+            $('#showPickerGender').css("pointer-events", "none")
+            $('#showDatePickerBirthday').css("pointer-events", "none")
+            $('#isDeadChk').css("pointer-events", "none")
+            $('#saveBtn a').css('display', 'none')
+            $('#showDatePickerDeadDate').css("pointer-events", "none")
+            $('#uploaderInput').css("pointer-events", "none")
+            $('.weui-uploader__files').css("pointer-events", "none")
+        }
+
+        //编辑模式
+        function canEdit() {
+
+            console.log('可以编辑')
+            $('.editUser').parent().css('display', 'none')
+            $('input').removeAttr('readonly', 'readonly')
+            $('#showPickerGender').css("pointer-events", "auto")
+            $('#showDatePickerBirthday').css("pointer-events", "auto")
+            $('#isDeadChk').css("pointer-events", "auto")
+            $('#saveBtn a').css('display', 'block')
+            $('#showDatePickerDeadDate').css("pointer-events", "auto");
+            $('#uploaderInput').css("pointer-events", "auto")
+            $('.weui-uploader__files').css("pointer-events", "auto")
+            if (form_urlData.body == 'none') {
+                $('#familyBasic_cell').show();
+                familyBasicSelectInit();
+            }
+        }
+
+        function ajax() {
+            ajaxPost({
+                type: "GET",
+                url: "/member/getMember/" + form_memberId,
+                success: function (data) {
+                    if (data.statusCode == 200) {
+                        loading1.hide();
+                        console.log('shuju', data.data)
+                        var userD = data.data
+                        $("input[name='familyName']").val(userD.familyName)
+                        $("input[name='userName']").val(userD.userName)
+                        $("input[name='genderId']").val(userD.genderId)
+                        $("input[name='mobileNo']").val(userD.mobileNo)
+                        if (userD.genderId == 0) {
+                            $("#genderLabel").text('男')
+                        } else {
+                            $("#genderLabel").text('女')
+                        }
+
+
+                        $("input[name='otherName']").val(userD.otherName)
+                        $("input[name='idCardNo']").val(userD.idCardNo)
+                        $("input[name='birthday']").val(userD.birthday)
+                        $("#birthdayLabel").text(userD.birthday)
+
+                        $("input[name='birthPlace']").val(userD.birthPlace)
+
+                        $("input[name='isDead']").val(userD.isDead)
+                        if(userD.isDead == 1){
+                            $("#dead_area").show();
+                            $(this).is(":checked")
+                            $( "#isDeadChk" ).prop( "checked", true );
+                        }else{
+                            $("#dead_area").hide();
+                        }
+
+                        //死亡地点
+                        $("input[name='deadDate']").val(userD.deadDate)
+                        //埋葬地点
+                        $("input[name='deadPlace']").val(userD.deadPlace)
+                        //死亡时间
+                        $("input[name='tombPlace']").val(userD.tombPlace)
+
+                        if (userD.headThumb) {
+                            $(".weui-uploader__files").append('<li class="weui-uploader__file" data-id="1" style="background-image: url(&quot;' + userD.headThumb + '&quot;);"></li>');
+                            $('input[name=headThumb]').val(userD.headThumb);
+                            $(".weui-uploader__input-box").hide();
+                        }
+
+                    } else {
+                        weui.topTips(data.message, 3000);
+                    }
+                }
+            });
+        }
+
+        var familyBasicId;
+
+        function familyBasicSelectInit() {
+            ajaxPost({
+                type: "GET",
+                url: "/getAllFamilyBasics",
+                data: {familyId: form_urlData.familyId},
+                success: function (data) {
+                    var list = [];
+                    for (var i = 0; i < data.data.length; i++) {
+                        list.push({
+                            label: data.data[i].familyBasicName,
+                            value: data.data[i].familyBasicId,
+                        })
+                    }
+                    if (list.length > 0) {
+                        $('input[name=familyBasic]').val(list[0].label);
+                        familyBasicId = list[0].value;
+                    }
+                    $('input[name=familyBasic]').on('click', function () {
+                        weui.picker(list, {
+                            title: '家族辈份选择',
+                            id: 'familyBasic',
+                            defaultValue: [familyBasicId],
+                            onChange: function (result) {
+                            },
+                            onConfirm: function (result) {
+                                familyBasicId = result[0].value;
+                                $('#familyBasic').val(result[0].label);
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+        // $(function(){
+        //     loadData(function(){
+        //         regEvent();
+        //     });
+        //     $('#showgender').on('click', function () {
+        //         weui.picker([{
+        //             label: '男性',
+        //             value: 0
+        //         }, {
+        //             label: '女性',
+        //             value: 1
+        //         }], {
+        //             onChange: function (result) {
+        //                 console.log(result);
+        //             },
+        //             onConfirm: function (result) {
+        //                 console.log(result[0].label);
+        //                 var gender = result[0].label
+        //                 $('#showgender > .weui-cell__ft').text(gender)
+        //             },
+        //             title: '请选择性别'
+        //         });
+        //     });
+        // });
+        // function loadData(regEv){
+        //     var memberId=getURLVar("memberId");
+        //     var op=getURLVar("op");
+        //     var loading1 = weui.loading("加载中..");
+        //     ajaxPost(
+        //         {
+        //             type:"GET",
+        //             url: "member/getMember/"+memberId,
+        //             success: function (data) {
+        //                 if(data.statusCode==200){
+        //                     var parentMemberId=data.data.parentMemberId;
+        //                     var mateId=data.data.mateId;
+        //                     loading1.hide();
+        //                     //$("inpuit[name='memberId']").val(memberId);
+        //                     if(op==0){//添加父母
+        //                         ajaxPost(
+        //                             {
+        //                                 type:"GET",
+        //                                 url: "member/getMember/"+parentMemberId,
+        //                                 success: function (data0) {
+        //                                     loading1.hide();
+        //                                     if(data0.statusCode==200){
+        //                                         $("input[name='parentMemberId']").val(data0.data.parentMemberId);//
+        //                                         $("input[name='mateId']").val(data0.data.memberId);
+        //                                     }else{
+        //                                         weui.topTips(data0.message, 3000);
+        //                                     }
+        //                                 }
+        //                             });
+        //                     }else if(op==1){//添加fu夫妻
+        //                         $("input[name='parentMemberId']").val(parentMemberId);
+        //                         if(!isNullOrEmpty(mateId) && mateId>0){//如果已经存在第一任夫君，则将挂在第一夫君上面（第一个人，也可能是女人）
+        //                             $("input[name='mateId']").val(mateId);
+        //                         }else{
+        //                             $("input[name='mateId']").val(data.data.memberId);
+        //                         }
+        //
+        //                     }else if(op==2){//添加子女
+        //                         if(!isNullOrEmpty(mateId) && mateId>0){//如果已经存在夫君，则将子女挂在夫君上面（第一个人，也可能是女人）
+        //                             $("input[name='parentMemberId']").val(mateId);
+        //                         }else{
+        //                             $("input[name='parentMemberId']").val(memberId);
+        //                         }
+        //                     }else if(op==3){//添加兄妹
+        //                         $("input[name='parentMemberId']").val(parentMemberId);
+        //                     }else if(op==4){//编辑
+        //                         loadForm($("#editForm"),data.data);
+        //                         $("#genderLabel").html(data.data.genderId==0?"男":"女");
+        //                         if(!isNullOrEmpty(data.data.headThumb)){
+        //                             $(".weui-uploader__input-box").hide();
+        //                             $(".weui-uploader__files").append('<li class="weui-uploader__file" data-id="1" style="background-image: url('+data.data.headThumb+')"></li>');
+        //                         }
+        //                     }
+        //                     regEv();
+        //                 }else{
+        //                     loading1.hide();
+        //                     weui.topTips(data.message, 3000);
+        //                 }
+        //             }
+        //         });
+        // }
+        // function regEvent(){
+        //     $("#cancel").on("click",function(){
+        //         $(".page").removeClass("slideIn").addClass("slideOut");
+        //         setInterval(
+        //             function(){
+        //                 history.go(-1);
+        //             }
+        //             ,300)
+        //     });
+        //     $('#showDatePickerBirthday').on('click', function () {
+        //         weui.datePicker({
+        //             start: 1990,
+        //             end: new Date().getFullYear(),
+        //             onChange: function (result) {
+        //                 $("#birthdayLabel").html(result[0].value+'-'+result[1].value+'-'+result[2].value);
+        //                 $("input[name='birthday']").val(result[0].value+'-'+result[1].value+'-'+result[2].value);
+        //             },
+        //             onConfirm: function (result) {
+        //                 $("#birthdayLabel").html(result[0].value+'-'+result[1].value+'-'+result[2].value);
+        //                 $("input[name='birthday']").val(result[0].value+'-'+result[1].value+'-'+result[2].value);
+        //             },
+        //             title: '请选择日期'
+        //         });
+        //     });
+        //     $('#showDatePickerDeadDate').on('click', function () {
+        //         weui.datePicker({
+        //             start: 1990,
+        //             end: new Date().getFullYear(),
+        //             onChange: function (result) {
+        //                 $("#deadDateLabel").html(result[0].value+'-'+result[1].value+'-'+result[2].value);
+        //                 $("input[name='dead_date']").val(result[0].value+'-'+result[1].value+'-'+result[2].value);
+        //             },
+        //             onConfirm: function (result) {
+        //                 $("#deadDateLabel").html(result[0].value+'-'+result[1].value+'-'+result[2].value);
+        //                 $("input[name='dead_date']").val(result[0].value+'-'+result[1].value+'-'+result[2].value);
+        //             },
+        //             title: '请选择去世日期'
+        //         });
+        //     });
+        //     $("#isDeadChk").on("change",function(){
+        //         if($(this).is(":checked")){
+        //             $("#dead_area").show();
+        //             $("input[name='isDead']").val(1);
+        //         }else{
+        //             $("#dead_area").hide();
+        //             $("input[name='isDead']").val(0);
+        //         }
+        //
+        //     });
+        //     $('#showPickerGender').on('click', function () {
+        //         weui.picker([{
+        //             label: '男',
+        //             value: 0
+        //         }, {
+        //             label: '女',
+        //             value: 1
+        //         }], {
+        //             onChange: function (result) {
+        //                 //console.log(result);
+        //                 $("#genderLabel").html(result[0].label);
+        //                 $("input[name='genderId']").val(result[0].value);
+        //             },
+        //             onConfirm: function (result) {
+        //                 //console.log(result);
+        //                 $("input[name='genderId']").val(result[0].value);
+        //             },
+        //             title: '请选择性别'
+        //         });
+        //     });
+        //     var $gallery = $("#gallery"),
+        //         $galleryImg = $("#galleryImg"),
+        //         $uploaderFiles = $(".weui-uploader__files")
+        //     ;
+        //     $uploaderFiles.on("click", "li", function(){
+        //         $galleryImg.attr("style", this.getAttribute("style"));
+        //         $gallery.fadeIn(100);
+        //     });
+        //     $gallery.on("click", function(){
+        //         $gallery.fadeOut(100);
+        //     });
+        //     $(".weui-icon_gallery-delete").on("click",function(){
+        //         $uploaderFiles.find("li").remove();
+        //         $(".weui-uploader__input-box").show();
+        //     });
+        //     weui.uploader('#uploader', {
+        //         url: 'member/upload',
+        //         auto: true,
+        //         type: 'base64',
+        //         fileVal: 'fileVal',
+        //         compress: {
+        //             width: 100,
+        //             height: 100,
+        //             quality: .8
+        //         },
+        //         onBeforeQueued: function(files) {
+        //             // `this` 是轮询到的文件, `files` 是所有文件
+        //             if(["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0){
+        //                 weui.alert('请上传图片');
+        //                 return false; // 阻止文件添加
+        //             }
+        //             if(this.size > 10 * 1024 * 1024){
+        //                 weui.alert('请上传不超过10M的图片');
+        //                 return false;
+        //             }
+        //             if (files.length > 1) { // 防止一下子选择过多文件
+        //                 weui.alert('最多只能上传1张图片，请重新选择');
+        //                 return false;
+        //             }
+        //         },
+        //         onQueued: function(){
+        //             $(".weui-uploader__input-box").hide();
+        //         },
+        //         onBeforeSend: function(data, headers){
+        //
+        //         },
+        //         onProgress: function(procent){
+        //         },
+        //         onSuccess: function (ret) {
+        //             $("[name='headThumb']").val(this.base64);
+        //         },
+        //         onError: function(err){
+        //         }
+        //     });
+        //     $("#submit").on("click",function(){
+        //         //weui.topTips('请填写正确的字段');
+        //         weui.form.validate('#editForm', function (error) {
+        //             if (!error) {
+        //                 var loading = weui.loading('提交中...');
+        //                 ajaxPost(
+        //                     {
+        //                         url: "member/saveMember",
+        //                         data: $("#editForm").serialize() ,
+        //                         success: function (data) {
+        //                             if(data.statusCode==200){
+        //                                 setTimeout(function () {
+        //                                     loading.hide();
+        //                                     weui.toast('操作成功', {
+        //                                         duration: 3000,
+        //                                         className: 'custom-classname',
+        //                                         callback: function(){
+        //                                             location.href="familytree";
+        //                                         }
+        //                                     });
+        //                                 }, 1500);
+        //                             }else{
+        //                                 loading.hide();
+        //                                 weui.topTips(data.message, 3000);
+        //                             }
+        //                         }
+        //                     });
+        //             }
+        //         }, {
+        //             regexp: {
+        //                 IDNUM: /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/,
+        //                 VCODE: /^.{4}$/
+        //             }
+        //         });
+        //     });
+        //
+        // }
+    </script>
+</div>
+</body>
+</html>

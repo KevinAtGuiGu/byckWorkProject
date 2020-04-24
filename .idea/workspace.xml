@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="745033e7-8e9c-4764-b136-d5fa692b3ab7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/controller/WechatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/controller/WechatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/mapper/FamilyMemberMappingMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/mapper/FamilyMemberMappingMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/service/impl/MemberServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/service/impl/MemberServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/FamilyMemberMappingMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/FamilyMemberMappingMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/auth/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/auth/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/auth/searchFamilyBranchPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/auth/searchFamilyBranchPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/my/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/my/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/my/merge.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/my/merge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/my/selectBranchAdmin.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/my/selectBranchAdmin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/kingtrustcloud/mapper/MapperTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/kingtrustcloud/mapper/MapperTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="DatabaseLocalColorSettings">
+    <colors>
+      <entry key="8add65d7-a45a-40a3-835e-903c179d5acf" value="Green" />
+    </colors>
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="familytree@localhost" type="feb32156:DbDataSourceImpl" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="E:\RepMaven_localRepository" />
+        <option name="mavenHome" value="F:/maven/apache-maven-3.3.9" />
+        <option name="userSettingsFile" value="F:\maven\apache-maven-3.3.9\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1ac65wkZNqHs99a1cF2LudAjUmP" />
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
+  </component>
+  <component name="RunManager" selected="Spring Boot.familytreeApp">
+    <configuration name="MapperTest.testInsert" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="familytree" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.kingtrustcloud.mapper.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.kingtrustcloud.mapper" />
+      <option name="MAIN_CLASS_NAME" value="com.kingtrustcloud.mapper.MapperTest" />
+      <option name="METHOD_NAME" value="testInsert" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="familytreeApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="familytree" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.kingtrustcloud.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.kingtrustcloud.familytreeApp" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.familytreeApp" />
+        <item itemvalue="JUnit.MapperTest.testInsert" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\凯文\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+    <option name="runUnderTerminal" value="true" />
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\workspaceproject\bykc\familytree" />
+          <option name="myCopyRoot" value="E:\workspaceproject\bykc\familytree" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\workspaceproject\bykc\familytree" />
+          <option name="myCopyRoot" value="E:\workspaceproject\bykc\familytree" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="745033e7-8e9c-4764-b136-d5fa692b3ab7" name="Default Changelist" comment="" />
+      <created>1587022355012</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1587022355012</updated>
+      <workItem from="1587022359418" duration="10284000" />
+      <workItem from="1587033070564" duration="50000" />
+      <workItem from="1587038703206" duration="2750000" />
+      <workItem from="1587042879829" duration="725000" />
+      <workItem from="1587044189611" duration="3650000" />
+      <workItem from="1587087760036" duration="25015000" />
+      <workItem from="1587135597225" duration="4450000" />
+      <workItem from="1587177976761" duration="3051000" />
+      <workItem from="1587181246035" duration="543000" />
+      <workItem from="1587181811693" duration="361000" />
+      <workItem from="1587182202741" duration="243000" />
+      <workItem from="1587187463974" duration="811000" />
+      <workItem from="1587347402714" duration="11279000" />
+      <workItem from="1587366356280" duration="9722000" />
+      <workItem from="1587433281791" duration="18265000" />
+      <workItem from="1587456579507" duration="7085000" />
+      <workItem from="1587520144229" duration="26935000" />
+      <workItem from="1587606442198" duration="25135000" />
+      <workItem from="1587692399382" duration="5290000" />
+    </task>
+    <task id="LOCAL-00001">
+      <created>1587024940631</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1587024940631</updated>
+    </task>
+    <task id="LOCAL-00002">
+      <created>1587033114426</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1587033114426</updated>
+    </task>
+    <task id="LOCAL-00003">
+      <created>1587038844949</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1587038844949</updated>
+    </task>
+    <task id="LOCAL-00004">
+      <created>1587088377370</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1587088377370</updated>
+    </task>
+    <task id="LOCAL-00005">
+      <created>1587107350205</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1587107350205</updated>
+    </task>
+    <task id="LOCAL-00006">
+      <created>1587109482839</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1587109482839</updated>
+    </task>
+    <task id="LOCAL-00007">
+      <created>1587118825502</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1587118825502</updated>
+    </task>
+    <task id="LOCAL-00008">
+      <created>1587140050460</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1587140050460</updated>
+    </task>
+    <task id="LOCAL-00009">
+      <created>1587353297857</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1587353297857</updated>
+    </task>
+    <task id="LOCAL-00010">
+      <created>1587378154886</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1587378154886</updated>
+    </task>
+    <task id="LOCAL-00011">
+      <created>1587379028029</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1587379028029</updated>
+    </task>
+    <task id="LOCAL-00012">
+      <created>1587434866388</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1587434866388</updated>
+    </task>
+    <task id="LOCAL-00013">
+      <created>1587520516598</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1587520516598</updated>
+    </task>
+    <task id="LOCAL-00014">
+      <created>1587620384872</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1587620384872</updated>
+    </task>
+    <task id="LOCAL-00015">
+      <created>1587630915370</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1587630915370</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LAST_COMMIT_MESSAGE" value="" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="133" y="0" key="#Project_Structure" timestamp="1587633988275">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="133" y="0" key="#Project_Structure/0.0.1280.680@0.0.1280.680" timestamp="1587633988275" />
+    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587023273065">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1587023273065" />
+    <state x="402" y="0" key="#com.intellij.ide.util.MemberChooser" timestamp="1587105534819">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="402" y="0" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1587105534819" />
+    <state x="0" y="0" key="CommitChangelistDialog2" timestamp="1587630914068">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="0" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1587630914068" />
+    <state x="93" y="93" width="1095" height="495" maximized="true" key="DiffContextDialog" timestamp="1587630906379">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="93" y="93" width="1095" height="495" maximized="true" key="DiffContextDialog/0.0.1280.680@0.0.1280.680" timestamp="1587630906379" />
+    <state x="330" y="24" key="FileChooserDialogImpl" timestamp="1587628988400">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="330" y="24" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1587628988400" />
+    <state width="1229" height="167" key="GridCell.Tab.0.bottom" timestamp="1587697330034">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="167" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1587697330034" />
+    <state width="1229" height="167" key="GridCell.Tab.0.center" timestamp="1587697330034">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="167" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1587697330034" />
+    <state width="1229" height="167" key="GridCell.Tab.0.left" timestamp="1587697330034">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="167" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1587697330034" />
+    <state width="1229" height="167" key="GridCell.Tab.0.right" timestamp="1587697330034">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="167" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1587697330034" />
+    <state width="1229" height="167" key="GridCell.Tab.1.bottom" timestamp="1587697330034">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="167" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1587697330034" />
+    <state width="1229" height="167" key="GridCell.Tab.1.center" timestamp="1587697330034">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="167" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1587697330034" />
+    <state width="1229" height="167" key="GridCell.Tab.1.left" timestamp="1587697330034">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="167" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1587697330034" />
+    <state width="1229" height="167" key="GridCell.Tab.1.right" timestamp="1587697330034">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="167" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1587697330034" />
+    <state width="1229" height="166" key="GridCell.Tab.2.bottom" timestamp="1587636787013">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="166" key="GridCell.Tab.2.bottom/0.0.1280.680@0.0.1280.680" timestamp="1587636787013" />
+    <state width="1229" height="166" key="GridCell.Tab.2.center" timestamp="1587636787013">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="166" key="GridCell.Tab.2.center/0.0.1280.680@0.0.1280.680" timestamp="1587636787013" />
+    <state width="1229" height="166" key="GridCell.Tab.2.left" timestamp="1587636787013">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="166" key="GridCell.Tab.2.left/0.0.1280.680@0.0.1280.680" timestamp="1587636787013" />
+    <state width="1229" height="166" key="GridCell.Tab.2.right" timestamp="1587636787013">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1229" height="166" key="GridCell.Tab.2.right/0.0.1280.680@0.0.1280.680" timestamp="1587636787013" />
+    <state x="0" y="0" key="SettingsEditor" timestamp="1587697259142">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="0" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1587697259142" />
+    <state width="450" height="531" key="SqlResolveConfigurable" timestamp="1587023400602">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="450" height="531" key="SqlResolveConfigurable/0.0.1280.680@0.0.1280.680" timestamp="1587023400602" />
+    <state width="623" height="678" key="SwitcherDM" timestamp="1587089784468">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="623" height="678" key="SwitcherDM/0.0.1280.680@0.0.1280.680" timestamp="1587089784468" />
+    <state width="647" height="347" key="XDebugger.FullValuePopup" timestamp="1587455752125">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="647" height="347" key="XDebugger.FullValuePopup/0.0.1280.680@0.0.1280.680" timestamp="1587455752125" />
+    <state x="284" y="125" key="com.intellij.ide.util.TipDialog" timestamp="1587692404155">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="284" y="125" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1587692404155" />
+    <state x="427" y="157" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1587038947636">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="427" y="157" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.680@0.0.1280.680" timestamp="1587038947636" />
+    <state x="97" y="17" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1587106196948">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="97" y="17" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1280.680@0.0.1280.680" timestamp="1587106196948" />
+    <state x="309" y="50" width="663" height="596" key="extract.method.dialog" timestamp="1587378878005">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="309" y="50" width="663" height="596" key="extract.method.dialog/0.0.1280.680@0.0.1280.680" timestamp="1587378878005" />
+    <state x="236" y="17" width="1041" height="650" key="find.popup" timestamp="1587696290298">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="236" y="17" width="1041" height="650" key="find.popup/0.0.1280.680@0.0.1280.680" timestamp="1587696290298" />
+    <state x="213" y="147" key="run.anything.popup" timestamp="1587027059582">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="213" y="147" key="run.anything.popup/0.0.1280.680@0.0.1280.680" timestamp="1587027059582" />
+    <state x="219" y="-1" width="840" height="1034" key="search.everywhere.popup" timestamp="1587625870334">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="219" y="-1" width="840" height="1034" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1587625870334" />
+    <state x="468" y="218" key="svn.passwordDialog" timestamp="1587182340863">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="468" y="218" key="svn.passwordDialog/0.0.1280.680@0.0.1280.680" timestamp="1587182340863" />
+    <state x="436" y="214" key="svn.sslDialog" timestamp="1587182225032">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="436" y="214" key="svn.sslDialog/0.0.1280.680@0.0.1280.680" timestamp="1587182225032" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/controller/LoginController.java</url>
+          <line>55</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/service/impl/FamilyBranchServiceImpl.java</url>
+          <line>116</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/service/impl/FamilyBranchServiceImpl.java</url>
+          <line>156</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/service/impl/MemberServiceImpl.java</url>
+          <line>328</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/controller/IndexController.java</url>
+          <line>83</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/controller/IndexController.java</url>
+          <line>103</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/controller/MyController.java</url>
+          <line>266</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/controller/MyController.java</url>
+          <line>265</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/controller/MyController.java</url>
+          <line>247</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/kingtrustcloud/familytree/service/impl/MemberServiceImpl.java</url>
+          <line>208</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

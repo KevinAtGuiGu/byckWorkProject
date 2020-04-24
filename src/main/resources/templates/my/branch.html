@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 开始分支管理页面 -->
+<div th:fragment="tpl_branch">
+    <div class="page">
+        <div class="fixed-b"> <a href="javascript:" class="weui-btn_cell weui-btn_cell-primary " id="newBranch">添加分支</a></div>
+        <div class="weui-cells branch-pags m-b" id="familyPages" >
+            <div class="weui-cell" href="javascript:" style="font-size:0.875rem;padding: 10px 16px;">
+                <div class="weui-cell__bd">
+                    <p style="color: rgba(0, 0, 0, 0.5)">三二房源公世系</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </div>
+            <div id="familyBranchList">
+
+            </div>
+            <div class="weui-loadmore" id="loading">
+                <i class="weui-loading"></i>
+                <span class="weui-loadmore__tips">正在加载</span>
+            </div>
+          <!--  <div class="weui-cell icon-ziyuan " href="javascript:" id="familyBranch">
+            &lt;!&ndash;    <div class="weui-cell__bd">
+                    <p>朝进裔孙起观</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <div class="set-two" data-id="1">
+                        <div class="xiugai addHereditary"><span class="iconfont icon-xiugai "></span>改名</div>
+                        <div class="bianji"><span class="iconfont icon-fenzhijigou"></span>编辑树</div>
+                    </div>
+                </div>&ndash;&gt;
+            </div>-->
+        </div>
+            <!--END dialog1-->
+    </div>
+    <script type="text/javascript">
+        // type 1是新增 2是修改
+        var type = 1
+        // 存储当前修改的家族分支信息
+        var branchlist = {}
+        // 家族分支列表
+        var  list = []
+        var  list2 = []
+        var Index = 0   //保存对应列的下标
+        var loading = false;  //状态标记 这个变量主要是用来控制触发次数，官网也有说明，事件可能会触发多次
+        var countPage=1;//总页数
+        var page=1 ;//当前页
+        $(function () {
+            $('#newBranch').on('click', function () {
+                branchlist={};
+                window.location.hash = 'addFamilyBranch';
+                type = 1
+            });
+            initBranchList();
+        });
+
+        // 初始化分支列表
+        function initBranchList() {
+            var loading1 = weui.loading("加载中..");
+            getFamilyBranchs()
+            function getFamilyBranchs() {
+                ajaxPost(
+                    {
+                        type: "GET",
+                        url: "getFamilyBranchs",
+                        data: {pageNum: page},
+                        success: function (data) {
+                            loading1.hide();
+                            console.log(data);
+                            if (data.statusCode == 200) {
+
+                                list = list.concat(data.data.list);//列表数据合并
+                                countPage = data.data.pages;  //总数
+                                loading = false;//会多次触发，所以 需要请求完成数据 才能继续触发
+                                $("#loading").css("display","none");//数据加载完隐藏加载提示
+                                page++;
+                                // list = data.data;
+                                var html='';
+                                for (var i = 0; i < data.data.list.length; i++) {
+                                    html+="<div class='weui-cell'>"+
+                                        "<div class= 'weui-cell__bd'>" +
+                                        "<p id='modification"+Index+"'>" + data.data.list[i].branchName + "</p >" +
+                                        "</div><div class='weui-cell__ft'>" +
+                                        "<div class='set-two'>" +
+                                        "<div class='xiugai addHereditary ' data-id="+data.data.list[i].familyBranchId+" "+"+ data-index="+Index+"> " +
+                                        "<span class='iconfont icon-xiugai modification' ></span>修改</div>" +
+                                        "<div class='bianji' data-id="+data.data.list[i].familyBranchId+"  data-fid="+data.data.list[i].familyId+"><span class='iconfont icon-fenzhijigou'></span>编辑树</div>" +
+                                        "</div>" +
+                                        "</div>"+
+                                        "</div>";
+                                    Index++;
+                                }
+                                $("#familyBranchList").append(html);
+
+                                // 编辑树按钮点击事件，进入树页面
+                                $('.bianji').on('click',function () {
+                                    var familyBranchId = this.dataset.id;
+                                    var familyIdF = this.dataset.fid;
+                                    window.location.href = 'my?familyBranchId='+ familyBranchId + '&familyId='+ familyIdF + '&body=none#tree'
+                                })
+                                // 修改按钮点击事件，进入修改分支页面
+                                $('.addHereditary').on('click', function () {
+                                    console.log("123123")
+                                    var familyBranchId = this.dataset.id;
+                                    var  index = this.dataset.index;
+                                    for (var i = 0;i <list.length;i++){
+                                        if ( list[i].familyBranchId == familyBranchId) {
+                                            branchlist = list[i]
+                                        }
+                                    }
+                                    branchlist.index = index
+                                    type = 2
+                                    window.location.hash = 'addFamilyBranch';
+                                });
+                            } else {
+                                weui.topTips(data.message, 3000);
+                            }
+                        }
+                    });
+            };
+            $('.page').infinite().on("infinite", function() {
+                $("#loading").css("display","block");//显示 加载中图标
+                if(loading) return;
+                loading = true;
+                if(page<=countPage){//如果当前页小于总页面
+                    getFamilyBranchs();
+                }else{
+                    $('.page').destroyInfinite();//到最后一页时，销毁它
+                    $("#loading>i").css("display","none");
+                    $("#loading>span").html("到底啦~").css("color","#BDBDBD");
+                }
+            });
+        }
+    </script>
+</div>
+
+</body>
+</html>

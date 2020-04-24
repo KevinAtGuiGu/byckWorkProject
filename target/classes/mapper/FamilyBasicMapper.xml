@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingtrustcloud.familytree.mapper.FamilyBasicMapper">
+
+    <select id="selectPage" resultType="com.kingtrustcloud.familytree.entity.FamilyBasic">
+        select family_basic_id familyBasicId,
+        family_id familyId,
+        member_id memberId,
+        basic_index basicIndex,
+        family_basic_name familyBasicName,
+        description description
+        from family_basic
+        where basic_index >= (select basic_index
+        from family_basic
+        where family_id = #{familyId}
+        order by basic_index
+        limit #{statIndex} ,1)
+        limit #{pageSize}
+        <!--
+    SELECT
+    family_basic_id familyBasicId,
+    family_id familyId,
+    member_id memberId,
+    basic_index basicIndex,
+    family_basic_name familyBasicName,
+    description description
+    FROM
+    family_basic
+    WHERE
+    family_id = #{familyId}
+
+    ORDER BY
+    basic_Index
+    LIMIT #{statIndex},#{pageSize}
+         -->
+    </select>
+
+    <select id="getChildBasicId" resultType="long">
+        SELECT
+            family_basic_id
+        FROM
+            family_basic fb2
+            INNER JOIN ( SELECT fb.family_id, fb.basic_index FROM family_basic fb WHERE family_basic_id = #{basicId} ) a ON fb2.family_id = a.family_id
+        WHERE
+            fb2.basic_index > a.basic_index
+            LIMIT 1
+    </select>
+</mapper>

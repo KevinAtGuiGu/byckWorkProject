@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+	<base th:href="${#request.getContextPath()}+'/'">
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>族谱树</title>
+<link rel="stylesheet" href="assets/css/weui.min.css" />
+<link rel="stylesheet" href="assets/css/familytree.css" />
+<link type="text/css" rel="stylesheet" href="assets/css/jsmind.css" />
+</head>
+<body ontouchstart>
+	<div class="container" id="container">
+		<div class="page">
+			<div class="weui-form">
+				<div class="weui-form__control-area">
+					<div class="weui-cells__group weui-cells__group_form">
+						<div class="weui-cells weui-cells_form">
+							<div class="weui-cell weui-cell_active">
+								<div class="weui-cell__hd">
+									<label class="weui-label">手机号</label>
+								</div>
+								<div class="weui-cell__bd">
+									<input class="weui-input" placeholder="填写本人账号或手机号" id="phone"/>
+								</div>
+							</div>
+							<div class="weui-cell weui-cell_active weui-cell_vcode">
+								<div class="weui-cell__hd">
+									<label class="weui-label">验证码</label>
+								</div>
+								<div class="weui-cell__bd">
+									<input autofocus class="weui-input" type="text" pattern="[0-9]*" id="js_input" placeholder="输入验证码" maxlength="6" />
+								</div>
+								<div class="weui-cell__ft">
+									<button class="weui-btn weui-btn_default weui-vcode-btn" id="getCaptchaCode">获取验证码</button>
+								</div>
+							</div>
+							<div class="weui-cells__tips">
+								<a class="weui-link" href="javascript:;">收不到验证码</a>
+							</div>
+							<div class="weui-cell weui-cell_active">
+								<div class="weui-cell__hd">
+									<label class="weui-label" >密码</label>
+								</div>
+								<div class="weui-cell__bd">
+									<input class="weui-input" placeholder="填写密码" type="password" id="password1"/>
+								</div>
+							</div>
+							<div class="weui-cell weui-cell_active">
+								<div class="weui-cell__hd">
+									<label class="weui-label">确认密码</label>
+								</div>
+								<div class="weui-cell__bd">
+									<input class="weui-input" placeholder="填写确认密码" type="password" id="password2"/>
+								</div>
+							</div>
+							<div class="weui-cell weui-cell_active">
+								<div class="weui-cell__hd">
+									<label class="weui-label">姓名</label>
+								</div>
+								<div class="weui-cell__bd">
+									<input class="weui-input" placeholder="填写本人名称" id="username"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="weui-form__tips-area">
+					<label id="weuiAgree" for="weuiAgreeCheckbox" class="weui-agree">
+						<input id="weuiAgreeCheckbox" type="checkbox" class="weui-agree__checkbox" />
+						<span class="weui-agree__text">阅读并同意<a href="javascript:void(0);">《相关条款》</a>
+					</span>
+					</label>
+				</div>
+				<div class="weui-form__opr-area">
+					<a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">注册</a>
+				</div>
+				<div class="weui-cells__tips">
+					<a class="weui-link" href="javascript:;">已有账号，请登陆</a>｜ <a class="weui-link" href="javascript:;">忘记密码</a>
+				</div>
+			</div>
+
+			<!-- 弹窗 -->
+			<div class="captcha_dialog" id="captcha" style="display: none;">
+				<div class="weui-mask"></div>
+				<div class="weui-dialog">
+					<div class="weui-dialog__bd">
+						<a href="javascript:void(0);" title="点击更换验证码">
+							<img th:src="drawCaptcha" class="imgcode" width="85%"/>
+						</a></br>
+						<input autofocus class="weui-input" type="text" pattern="[0-9]*" id="captcha_input" placeholder="输入验证码" maxlength="6" />
+					</div>
+					<div class="weui-dialog__ft">
+						<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="submitCaptchaCode()">确定</a>
+					</div>
+				</div>
+			</div>
+			<div id="toast" style="display: none;">
+				<div class="weui-mask_transparent"></div>
+				<div class="weui-toast">
+					<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+					<p class="weui-toast__content">操作成功！</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="assets/js/zepto.min.js"></script>
+	<script type="text/javascript" src="assets/js/jweixin-1.0.0.js"></script>
+	<script src="assets/js/weui.min.js"></script>
+	<script src="assets/js/familytree.js"></script>
+<script th:inline="javascript">
+	// var ctx = [[@{/}]];
+	$(function() {
+		$('.imgcode').click(function() {
+			var url = "drawCaptcha?s=" + Math.random();
+			$(".imgcode").attr("src", url);
+		});
+		$('#getCaptchaCode').on('click', function(){
+			$('#captcha').fadeIn(200);
+		});
+		$("#showTooltips").on("click",function(){
+			var phone=$('#phone').val();
+			var smsCode=$('#js_input').val();
+			var password1=$('#password1').val();
+			var password2=$('#password2').val();
+			var username=$('#username').val();
+			var weuiAgreeCheckbox=$('#weuiAgreeCheckbox').val();
+			if(!phone) {
+				weui.topTips("请填写手机号", 3000);
+				return;
+			}
+			if(!smsCode) {
+				weui.topTips("请填写验证码", 3000);
+				return;
+			}
+			if(!password1) {
+				weui.topTips("请填写密码", 3000);
+				return;
+			}
+			if(password2!=password1) {
+				weui.topTips("确认密码跟密码不一致", 3000);
+				return;
+			}
+			if(!username) {
+				weui.topTips("请填写用户名", 3000);
+				return;
+			}
+			if(!weuiAgreeCheckbox) {
+				weui.topTips("请勾选《相关条款》", 3000);
+				return;
+			}
+			var loading1 = weui.loading("加载中..");
+			ajaxPost(
+				{
+					type:"POST",
+					url: "register",
+					data: {phone:phone,checkCode:smsCode,password:password1,username:username},
+					success: function (data) {
+						loading1.hide();
+						if(data.statusCode==200){
+							var $toast=$('#toast');
+							$toast.fadeIn(100);
+							setTimeout(function () {
+								$toast.fadeOut(100);
+								$("#captcha").fadeOut(200);
+								location.href="familytree";
+							}, 2000);
+						}else{
+							weui.topTips(data.message, 3000);
+						}
+					}
+				});
+		});
+	});
+	function submitCaptchaCode() {
+		var code=$('#captcha_input').val();
+		var phone=$('#phone').val();
+		var loading1 = weui.loading("加载中..");
+		ajaxPost(
+			{
+				type:"POST",
+				url: "sendSms",
+				data: {kaptchaCode:code,phone:phone},
+				success: function (data) {
+					loading1.hide();
+					if(data.statusCode==200){
+						$('#js_input').val(data.data);
+						var $toast=$('#toast');
+						$toast.fadeIn(100);
+						setTimeout(function () {
+							$toast.fadeOut(100);
+							$("#captcha").fadeOut(200);
+						}, 2000);
+					}else{
+						weui.topTips(data.message, 3000);
+					}
+				}
+			});
+	}
+
+
+</script>
+</body>
+</html>

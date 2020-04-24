@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingtrustcloud.familytree.mapper.FamilyBranchMapper">
+
+    <select id="searchFamilyBranch" resultType="com.kingtrustcloud.familytree.vo.SearchFamilyBranchVO"
+            parameterType="com.kingtrustcloud.familytree.dto.SearchFamilyBranchDTO">
+        select fb.family_branch_id familyBranchId,fb.family_id familyId,fb.country_id countryId,fb.province_id
+        provinceId,
+        fb.city_id cityId,fb.district_id districtId,fb.branch_name branchName,fb.description,
+        mbi.family_name familyName,mbi.user_name userName,fb2.family_basic_name familyBasicName,mbi.member_id memberId,
+        wu.nick_name nickName
+        from member_basic_info mbi inner join family_member_mapping fmm on mbi.member_id=fmm.member_id and
+        fmm.status_id=1 and fmm.family_branch_id is not null and fmm.is_delete=0 and mbi.is_delete=0
+        left join family_branch fb on fmm.family_branch_id = fb.family_branch_id and fb.is_delete=0
+        left join family_basic fb2 on fmm.family_basic_id = fb2.family_basic_id  and fb2.is_delete=0
+        left join weixin_user wu on wu.member_id=mbi.member_id and wu.is_delete=0
+        <where>
+            <!-- 姓名搜索至少需要姓，确保姓氏是正确的，因此我认为可以使用左前缀固定模糊搜索，如果加索引会很快 -->
+            <if test="name!=null and name!=''">
+                and (mbi.user_name like concat(#{name},'%')
+                <if test="fatherName!=null and fatherName!=''">
+                    or mbi.user_name like concat(#{fatherName},'%')
+                </if>
+                )
+            </if>
+            <if test="districtId!=null or cityId!=null or provinceId!=null or birthPlaceProvinceId!=null or birthPlaceCityId!=null or birthPlaceDistrictId!=null">
+                <if test="districtId!=null or cityId!=null or provinceId!=null">
+                    and (
+                    <if test="districtId!=null">
+                        fb.district_id = #{districtId}
+                    </if>
+                    <if test="districtId==null and cityId!=null">
+                        fb.city_id = #{cityId}
+                    </if>
+                    <if test="provinceId!=null and districtId==null and cityId==null">
+                        fb.province_id = #{provinceId}
+                    </if>
+                </if>
+                <if test="birthPlaceProvinceId!=null or birthPlaceCityId!=null or birthPlaceDistrictId!=null">
+                    <choose>
+                        <when test="districtId!=null or cityId!=null or provinceId!=null ">
+                            or
+                        </when>
+                        <otherwise>
+                            and (
+                        </otherwise>
+                    </choose>
+                    <if test="birthPlaceDistrictId!=null">
+                        mbi.district_id = #{birthPlaceDistrictId}
+                    </if>
+                    <if test="birthPlaceDistrictId==null and birthPlaceCityId!=null">
+                        mbi.city_id = #{birthPlaceCityId}
+                    </if>
+                    <if test="birthPlaceProvinceId!=null and birthPlaceDistrictId==null and birthPlaceCityId==null">
+                        mbi.province_id = #{birthPlaceProvinceId}
+                    </if>
+                </if>
+                )
+            </if>
+        </where>
+    </select>
+
+    <select id="listSelectBranchAdminVO" resultType="com.kingtrustcloud.familytree.vo.SelectBranchAdminVO">
+        SELECT fmm.member_id memberId,
+               mbi.user_name userName,
+               mbi.account
+        FROM family_member_mapping fmm
+                 INNER JOIN member_basic_info mbi ON fmm.member_id = mbi.member_id
+            AND fmm.status_id = 1
+            AND fmm.is_delete = FALSE
+            AND mbi.is_delete = FALSE
+        WHERE fmm.family_branch_id = #{familyBranchId}
+    </select>
+
+    <select id="listBranchAdminVO" resultType="com.kingtrustcloud.familytree.vo.SelectBranchAdminVO">
+        SELECT fba.family_branch_admin_id familyBranchAdminId,
+               fmm.member_id              memberId,
+               mbi.user_name              userName,
+               mbi.account
+        FROM family_member_mapping fmm
+                 INNER JOIN member_basic_info mbi ON fmm.member_id = mbi.member_id
+            AND fmm.status_id = 1
+            AND fmm.is_delete = FALSE
+            AND mbi.is_delete = FALSE
+                 inner join family_branch_admin fba
+                            on fmm.member_id = fba.member_id and fmm.family_branch_id = fba.family_branch_id and
+                               fba.status_id = 1 and fba.is_delete = false
+        WHERE fmm.family_branch_id = #{familyBranchId}
+    </select>
+
+    <select id="listApprovel" resultType="com.kingtrustcloud.familytree.vo.FamilyBranchApprovelVO">
+        <!-- 查询分支成员的申请 -->
+        SELECT
+        fmm.family_member_mapping_id familyMemberMappingId,
+        fb.family_basic_name familyBasicName,
+        mbi.user_name userName,
+        mbi.family_name familyName,
+        mbi.other_name otherName,
+        mbi.address address,
+        mbi.province_id provinceId,
+        mbi.city_id cityId,
+        mbi.birthday_place birthdayPlace,
+        fmm.member_id memberId,
+        fabran.family_branch_id familyBranchId,
+        fabran.branch_name branchName,
+        null familyBranchAdminId,
+        fmm.create_time createTime,
+        mbi2.user_name nickName,
+        mbi2.head_thumb headImageUrl,
+        mbi2.gender_id AS sex
+        FROM
+        family_member_mapping fmm
+        LEFT JOIN member_basic_info mbi ON fmm.member_id = mbi.member_id and fmm.is_delete=false and mbi.is_delete=false
+        LEFT JOIN member_basic_info mbi2 ON fmm.col1 = mbi2.member_id and mbi2.is_delete=false
+        LEFT JOIN family_basic fb ON fmm.family_basic_id = fb.family_basic_id
+        LEFT JOIN family_branch fabran ON fmm.family_branch_id = fabran.family_branch_id and fabran.is_delete=false
+        WHERE
+        fmm.status_id = 0
+        <if test="!isSuperAdmin">
+            AND fmm.family_branch_id IN
+            (SELECT fba.family_branch_id FROM family_branch_admin fba WHERE fba.status_id = 1 AND fba.member_id =
+            #{memberId} AND fba.is_delete = 0 )
+        </if>
+        <if test="isSuperAdmin">
+            UNION (
+            <!-- 查询分支管理员的申请 -->
+            SELECT
+            null familyMemberMappingId,
+            null familyBasicName,
+            mbi.user_name userName,
+            mbi.family_name familyName,
+            mbi.other_name otherName,
+            mbi.address address,
+            mbi.province_id provinceId,
+            mbi.city_id cityId,
+            mbi.birthday_place birthdayPlace,
+            mbi.member_id memberId,
+            fbranch.family_branch_id familyBranchId,
+            fbranch.branch_name branchName,
+            fba.family_branch_admin_id familyBranchAdminId,
+            fba.create_time createTime,
+            null nickName,
+            null headImageUrl,
+            null AS sex
+            FROM
+            family_branch_admin fba
+            LEFT JOIN member_basic_info mbi ON fba.member_id = mbi.member_id and fba.is_delete=false and mbi.is_delete=false
+            LEFT JOIN family_branch fbranch ON fba.family_branch_id = fbranch.family_branch_id and fbranch.is_delete=false
+            WHERE
+            fba.status_id = 0 )
+        </if>
+    </select>
+    <select id="searchFamilyBranchList" resultType="com.kingtrustcloud.familytree.entity.FamilyBranch">
+        select fb.family_branch_id,
+               fb.family_id,
+               fb.code,
+               fb.country_id,
+               fb.province_id,
+               fb.city_id,
+               fb.district_id,
+               fb.branch_name
+        from family_branch fb
+        <where>
+            fb.status_id = 1 and fb.is_delete=0
+            <if test="keyWord != null and keyWord != ''">
+                and fb.branch_name like concat('%', #{keyWord}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

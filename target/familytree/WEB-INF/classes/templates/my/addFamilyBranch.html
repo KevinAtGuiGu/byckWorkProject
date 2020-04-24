@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="tpl_addFamilyBranch">
+    <div class="page">
+        <div class="weui-form">
+            <div class="weui-form__control-area">
+                <div class="weui-cells__group weui-cells__group_form">
+                    <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">家族</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" disabled="true" placeholder="请选择家族" id="tpl_addFamilyBranch_name"/>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">分支代码</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input"  placeholder="分支代码" id="tpl_addFamilyBranch_code"/>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">地区选择</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input autofocus class="weui-input" disabled="true" id="tpl_addFamilyBranch_city" placeholder="请选择所在地"/>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">分支名称</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-input" placeholder="分支名称" id="tpl_addFamilyBranch_branchName"/>
+                            </div>
+                        </div>
+                        <div class="weui-cell weui-cell_active">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">分支简介</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <input class="weui-textarea" placeholder="分支简介" id="tpl_addFamilyBranch_description"/>
+                            </div>
+                        </div>
+                        <div style="height: 10px; background: #ededed"></div>
+                        <div class="weui-cell weui-cell_active" id="setBranchAdminButton">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label">设置管理员</label>
+                            </div>
+                            <div class="weui-cell__bd">
+                                <a href="javascript:" style="float: right;" class="weui-btn weui-btn_mini weui-btn_primary" onclick="goSelectBranchAdmin()">添加</a>
+                            </div>
+                        </div>
+                        <div id="branchAdminList">
+<!--                            <div class="weui-cell weui-cell_active management">-->
+<!--                                <div class="weui-cell__hd">-->
+<!--                                    <label class="weui-label">田世家</label>-->
+<!--                                </div>-->
+<!--                                <div class="weui-cell__bd">-->
+<!--                                    <a href="javascript:" style="float: right;" >删除图标</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="weui-cell weui-cell_active management">-->
+<!--                                <div class="weui-cell__hd">-->
+<!--                                    <label class="weui-label">田世家</label>-->
+<!--                                </div>-->
+<!--                                <div class="weui-cell__bd">-->
+<!--                                    <a href="javascript:" style="float: right;" >删除图标</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="weui-cell weui-cell_active management">-->
+<!--                                <div class="weui-cell__hd">-->
+<!--                                    <label class="weui-label">田世家</label>-->
+<!--                                </div>-->
+<!--                                <div class="weui-cell__bd">-->
+<!--                                    <a href="javascript:" style="float: right;" >删除图标</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-form__opr-area show1" style="display: none;" >
+                <a class="weui-btn weui-btn_primary" href="javascript:" id="addFamilyBranch">创建家族分支</a>
+            </div>
+            <div class="weui-form__opr-area show2" style="display: none;" >
+                <a class="weui-btn weui-btn_primary" href="javascript:" id="addFamilyBranch2">提交修改家族分支</a>
+            </div>
+            <div id="js_toast" style="display: none;">
+                <div class="weui-mask_transparent"></div>
+                <div class="weui-toast">
+                    <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                    <p class="weui-toast__content">操作成功！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        // 家族列表
+        var familyList=[];
+        // 家族默认选中项
+        var pickerDefault;
+        // 地区选择默认选中项
+        var city_picker_ids = [];
+        // 地区选中的id
+        var personal_data={provinceId:"",cityId:"",districtId:""};
+        var branch_admin_list=[];
+        $(function () {
+            if(type == 1){
+                // 新增
+                // 新增时不需要设置管理员，因为分支还没创建，根本没有成员
+                $('#setBranchAdminButton').hide();
+                $('.show1').css('display','block')
+                initFamilyListSelect();
+                $("#addFamilyBranch").on("click", function () {
+                    var param = {
+                        familyId: pickerDefault,
+                        code: $('#tpl_addFamilyBranch_code').val(),
+                        branchName: $('#tpl_addFamilyBranch_branchName').val(),
+                        description: $('#tpl_addFamilyBranch_description').val(),
+                        countryId: 1,
+                        provinceId: personal_data.provinceId ? personal_data.provinceId :null ,
+                        cityId: personal_data.cityId ? personal_data.cityId :null ,
+                        districtId: personal_data.districtId ? personal_data.districtId :null ,
+                        // 超级管理员创建分支，不需要进入审批
+                        statusId:1
+                    }
+                    if (!param.familyId) {
+                        weui.topTips("请选择家族", 3000);
+                        return;
+                    }
+                    if (!param.branchName) {
+                        weui.topTips("请填写分支家族名称", 3000);
+                        return;
+                    }
+                    var loading1 = weui.loading("加载中..");
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "saveFamilyBranch",
+                            data: param,
+                            success: function (data) {
+                                loading1.hide();
+                                if (data.statusCode == 200) {
+                                    var $toast = $('#js_toast');
+                                    $toast.fadeIn(100);
+                                    initBranchList();
+                                    setTimeout(function () {
+                                        $toast.fadeOut(100);
+                                        // 创建成功，跳转到分支列表
+                                        history.go(-1)
+                                    }, 2000);
+                                } else {
+                                    weui.topTips(data.message, 3000);
+                                }
+                            }
+                        });
+                });
+            }
+            if (type ==2){
+                // 修改
+                $('#tpl_addFamilyBranch_code').val(branchlist.code)
+                $('#tpl_addFamilyBranch_branchName').val(branchlist.branchName)
+                $('.show2').css('display','block')
+                $('#tpl_addFamilyBranch_description').val(branchlist.description)
+                pickerDefault=branchlist.familyId;
+                initFamilyListSelect();
+                // 获取此分支管理员列表
+                listBranchAdmin();
+                // 地区可能只到城市，没有第三级
+                city_picker_ids.push(branchlist.provinceId)
+                city_picker_ids.push(branchlist.cityId)
+                if(branchlist.districtId) {
+                    city_picker_ids.push(branchlist.districtId)
+                }
+                var provinceId = ""
+                var cityId = ""
+                var  districtId = ''
+                for (var i=0;i<CHINA_CITY.length;i++){
+                    if(CHINA_CITY[i].value == branchlist.provinceId){
+                        provinceId = CHINA_CITY[i].label
+                        for (var j=0;j < CHINA_CITY[i].children.length;j++){
+                            if(CHINA_CITY[i].children[j].value == branchlist.cityId){
+                                cityId=  CHINA_CITY[i].children[j].label
+                                if(CHINA_CITY[i].children[j].children) {
+                                    for (var k=0;k < CHINA_CITY[i].children[j].children.length;k++){
+                                        if(CHINA_CITY[i].children[j].children[k].value == branchlist.districtId){
+                                            districtId =  CHINA_CITY[i].children[j].children[k].label
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                var site = provinceId + " "  + cityId+ " " + districtId
+                $('#tpl_addFamilyBranch_city').val(site)
+                $("#addFamilyBranch2").on("click", function () {
+                    var param = {
+                        familyBranchId:branchlist.familyBranchId,
+                        familyId: pickerDefault,
+                        code: $('#tpl_addFamilyBranch_code').val(),
+                        branchName: $('#tpl_addFamilyBranch_branchName').val(),
+                        description: $('#tpl_addFamilyBranch_description').val(),
+                        countryId: 1,
+                        provinceId: personal_data.provinceId ? personal_data.provinceId :branchlist.provinceId,
+                        cityId: personal_data.cityId ? personal_data.cityId :branchlist.cityId,
+                        districtId: personal_data.districtId ? personal_data.districtId : branchlist.districtId,
+                    }
+                    if (!param.familyId) {
+                        weui.topTips("请选择家族", 3000);
+                        return;
+                    }
+                    if (!param.branchName) {
+                        weui.topTips("请填写分支家族名称", 3000);
+                        return;
+                    }
+                    var loading1 = weui.loading("加载中..");
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "updateFamilyBranch",
+                            data: param,
+                            success: function (data) {
+                                loading1.hide();
+                                if (data.statusCode == 200) {
+                                    var $toast = $('#js_toast');
+                                    $toast.fadeIn(100);
+                                    var y = '#modification'+ branchlist.index
+                                    $(y).text(param.branchName)
+                                    list[branchlist.index].familyId =param.familyId
+                                    list[branchlist.index].code =param.code
+                                    list[branchlist.index].branchName =param.branchName
+                                    list[branchlist.index].description =param.description
+                                    list[branchlist.index].provinceId =param.provinceId
+                                    list[branchlist.index].cityId =param.cityId
+                                    list[branchlist.index].districtId =param.districtId
+
+                                    setTimeout(function () {
+                                        $toast.fadeOut(100);
+                                        // 申请创建成功，跳转到分支列表
+                                        history.go(-1)
+                                    }, 2000);
+                                } else {
+                                    weui.topTips(data.message, 3000);
+                                }
+                            }
+                        });
+                    updateBranchAdmin(branch_admin_list,branchlist.familyBranchId);
+                });
+            }
+
+        });
+
+        // 家族选择组件初始化
+        function initFamilyListSelect() {
+            ajaxPost(
+                {
+                    type: "GET",
+                    url: "listFamily",
+                    data: {},
+                    success: function (data) {
+                        if (data.statusCode == 200) {
+                            familyList = [];
+                            for(var i=0;i<data.data.length;i++) {
+                                familyList.push({
+                                    "label":data.data[i].familyName,
+                                    "value":data.data[i].familyId
+                                });
+                            }
+                            if(pickerDefault) {
+                                for(var i=0;i<familyList.length;i++){
+                                    if(familyList[i].value == pickerDefault){
+                                        $('#tpl_addFamilyBranch_name').val(familyList[i].label);
+                                    }
+                                }
+                            }
+                            if(familyList.length>0 && !pickerDefault) {
+                                pickerDefault = familyList[0].value;
+                            }
+                            $('#tpl_addFamilyBranch_name').on('click', function () {
+                                weui.picker(familyList, {
+                                    title: '家族选择',
+                                    id: 'tpl_addFamilyBranch_name',
+                                    defaultValue: [pickerDefault],
+                                    onChange: function (result) {
+                                    },
+                                    onConfirm: function (result) {
+                                        pickerDefault = result[0].value;
+                                        $('#tpl_addFamilyBranch_name').val(result[0].label);
+                                    }
+                                });
+                            });
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                });
+        }
+
+        // 地区选择组件初始化
+        $('#tpl_addFamilyBranch_city').on('click', function () {
+            weui.picker(CHINA_CITY, {
+                title: '地区选择',
+                id: 'tpl_addFamilyBranch_city',
+                depth: 3,
+                defaultValue: city_picker_ids,
+                onChange: function (result) {
+                },
+                onConfirm: function (result) {
+                    var value = '';
+                    city_picker_ids = [];
+                    for (var i = 0; i < result.length; i++) {
+                        value = value + ' ' + result[i].label;
+                    }
+                    personal_data.provinceId = result[0].value
+                    personal_data.cityId = result[1].value
+                    if(result[2]) {
+                        personal_data.districtId = result[2].value
+                    }
+                    $('#tpl_addFamilyBranch_city').val(value);
+                },
+            });
+        });
+
+        function listBranchAdmin() {
+            // 获取此分支管理员列表
+            ajaxPost(
+                {
+                    type: "GET",
+                    url: "listBranchAdminVO",
+                    data: {familyBranchId:branchlist.familyBranchId},
+                    success: function (data) {
+                        if (data.statusCode == 200) {
+                            if(data.data) {
+                                branch_admin_list=data.data;
+                                for(var i=0;i<branch_admin_list.length;i++) {
+                                    branch_admin_list[i].isDelete=false;
+                                }
+                                renderBranchAdmin(branch_admin_list);
+                            }
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                });
+        }
+
+        // 渲染分支管理员列表
+        function renderBranchAdmin(branch_admin_list) {
+            var html='';
+            for(var i=0;i<branch_admin_list.length;i++) {
+                if(!branch_admin_list[i].isDelete) {
+                    html+=`<div class="weui-cell weui-cell_active management">
+                                        <div class="weui-cell__hd">
+                                            <label class="weui-label">${branch_admin_list[i].userName}</label>
+                                        </div>
+                                        <div class="weui-cell__bd" data-id="${branch_admin_list[i].memberId}">
+                                            <a href="javascript:" style="float: right;" class="icon iconfont" onclick="deleteBranchAdmin(this)">&#xe614;</a>
+                                        </div>
+                                    </div>`;
+                }
+            }
+            $('#branchAdminList').html(html);
+        }
+
+        // 删除分支管理员
+        function deleteBranchAdmin(t) {
+            var memberId=$(t).parent().attr('data-id');
+            $(t).parent().parent().hide();
+            for(var i=0;i<branch_admin_list.length;i++) {
+                if(branch_admin_list[i].memberId==memberId) {
+                    branch_admin_list[i].isDelete=true;
+                }
+            }
+        }
+
+        // 跳转选择分支管理员页面
+        function goSelectBranchAdmin() {
+            window.location.hash = 'selectBranchAdmin';
+        }
+
+        // 更新分支管理员
+        function updateBranchAdmin(branch_admin_list,familyBranchId) {
+            for(var i=0;i<branch_admin_list.length;i++) {
+                branch_admin_list[i].familyBranchId=familyBranchId;
+            }
+            ajaxPost(
+                {
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "updateBranchAdmin",
+                    data: JSON.stringify(branch_admin_list),
+                    success: function (data) {
+                        if (data.statusCode == 200) {
+                        } else {
+                            weui.topTips(data.message, 3000);
+                        }
+                    }
+                });
+        }
+
+    </script>
+</div>
+</body>
+</html>

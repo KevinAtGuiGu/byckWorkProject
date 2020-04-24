@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 开始合并分支页面 -->
+<div th:fragment="tpl_merge">
+    <div class="page">
+        <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+        </div>
+        <div class="searchbar-result" id="searchResult">
+            <div class="weui-form">
+                <div class="weui-form__control-area">
+                    <div class="weui-cells__group weui-cells__group_form" style="height: 300px; overflow:auto;"
+                         id="checkBoxsBranch1">
+                        <div class="weui-cells weui-cells_checkbox" id="checkBoxsBranch">
+                            <!--  <label class="weui-cell weui-cell_active weui-check__label" for="s11">
+                                  <div class="weui-cell__hd">
+                                      <input type="checkbox" class="weui-check" name="checkbox1" id="s11" >
+                                      <i class="weui-icon-checked"></i>
+                                  </div>
+                                  <div class="weui-cell__bd">
+                                      <p>朝进裔孙起观</p>
+                                  </div>
+                                  <a href="#tree" class="gotree">查看</a>
+                              </label>-->
+                            <!--  <label class="weui-cell weui-cell_active weui-check__label" for="s12">
+                                  <div class="weui-cell__hd">
+                                      <input type="checkbox" name="checkbox1" class="weui-check" id="s12">
+                                      <i class="weui-icon-checked"></i>
+                                  </div>
+                                  <div class="weui-cell__bd">
+                                      <p>朝进裔孙起观</p>
+                                  </div>
+                                  <a href="#tree" class="gotree">查看</a>
+                              </label>-->
+                        </div>
+                        <div class="weui-loadmore" id="loading">
+                            <i class="weui-loading"></i>
+                            <span class="weui-loadmore__tips">正在加载</span>
+                        </div>
+                    </div>
+                    <div class="weui-cells__group weui-cells__group_form" id="seek" style="display: none">
+                        <div class="weui-cells weui-cells_checkbox" id="grabble">
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="weui-form__tips-area">
+                    <p class="weui-form__tips">
+                        点击合并即可合并分支
+                    </p>
+                </div>
+                <div class="weui-form__opr-area">
+                    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">合并分支</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            var loading = false;  //状态标记 这个变量主要是用来控制触发次数，官网也有说明，事件可能会触发多次
+            var countPage = 1;//总页数
+            var page = 1;//当前页
+            var pageSize = 8;//每页显示几条
+            var loading1 = weui.loading("加载中..");
+            // var inputcheng = $('#searchInput').val()
+            var pre_searchInput_val = '';
+            var serachFamilyBranchList_timeOut;
+            var list = [];//存放页面数据
+            var pages = 122;
+            var arr = [];//存放页面的数据
+            var confirm = [];
+            embranchment();
+
+            function embranchment() {
+                ajaxPost(
+                    {
+                        type: "GET",
+                        url: "getFamilyBranchs",
+                        data: {pageNum: page,pageSize:pageSize},
+                        success: function (data) {
+                            loading1.hide();
+                            console.log(data);
+                            pages = data.data.pages;
+                            if (data.statusCode == 200) {
+                                console.log("data数据集合",data[i])
+                                for (var i = 0; i < data.length; i++) {
+                                    data[i].iswhow = false
+                                }
+                                if (list.length < 1) {
+                                    list = data.data.list;
+                                    arr = data.data.list;
+                                    //console.log("xiaoyu")
+                                } else {
+                                    var array = [];
+                                    console.log("结果1"+data.data.list.length);
+                                    console.log("结果2"+list.length);
+                                    for (var i = 0; i < data.data.list.length; i++) {
+                                        var obj = data.data.list[i];
+                                        var num = obj.familyBranchId;
+                                        console.log("分支Id"+num);
+                                        var isExist = false;
+                                        for (var j = 0; j < list.length; j++) {
+                                            var aj = list[j];
+                                            var n = aj.familyBranchId;
+                                            console.log(n)
+                                            if (n == num) {
+                                                isExist = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!isExist) {
+                                            //将数据放入数组的末尾
+                                            array.push(obj);
+                                        }
+                                    }
+
+                                    list = list.concat(array);
+                                    arr = array;
+                                }
+                                loading = false;//会多次触发，所以 需要请求完成数据 才能继续触发
+                                $("#loading").css("display", "none");//数据加载完隐藏加载提示
+                                page++;
+                                show()
+                            } else {
+                                weui.topTips(data.message, 3000);
+                            }
+                        }
+                    });
+            }
+
+            $('#searchInput').live('input propertychange', function () {
+                //获取input 元素,并实时监听用户输入
+                // inputcheng = $('#searchInput').val();
+                // show()
+                if (pre_searchInput_val) {
+                    if (pre_searchInput_val === $('#searchInput').val()) {
+                        return;
+                    }
+                }
+                pre_searchInput_val = $('#searchInput').val();
+                if (serachFamilyBranchList_timeOut) {
+                    clearTimeout(serachFamilyBranchList_timeOut);
+                }
+                serachFamilyBranchList_timeOut = setTimeout(function () {
+                    searchFamilyBranchList($('#searchInput').val());
+                }, 1000)
+                /*  if (inputcheng) {
+                      searchFamilyBranchList(inputcheng)
+                      $('#seek').show()
+                      $('#checkBoxsBranch1').hide()
+                  } else {
+                      $('#seek').hide()
+                      $('#checkBoxsBranch1').show()
+                  }*/
+            });
+
+            //搜索数据调用
+            function searchFamilyBranchList(text) {
+                var loading1 = weui.loading("加载中..");
+                var searchresult = [];
+                ajaxPost(
+                    {
+                        type: "POST",
+                        url: "searchFamilyBranchList",
+                        data: {keyWord: text},
+                        success: function (data) {
+                            console.log(text);
+                            loading1.hide();
+                            if (data.statusCode == 200) {
+                                searchresult = data.data.list;
+                                console.log(searchresult)
+                                countPage = data.data.pages;
+                                console.log("分支搜索分页" + countPage)
+                                $("#checkBoxsBranch").empty();
+                                //渲染获取到的分支数据
+                                console.log("得到的数据是" + searchResult)
+                                renderSearchBranch(searchresult);
+                                loading = false;
+                                $("#loading").css("display", "none");
+                                for (var i = 0; i < searchresult.length; i++) {
+                                    for (var k = 0; k < list.length; k++) {
+                                        if (searchresult[i].familyBranchId == list[k].familyBranchId && list[k].iswhow) {
+                                            searchresult[i].iswhow = true;
+                                        } else if (searchresult[i].familyBranchId == list[k].familyBranchId) {
+                                            searchresult[i].iswhow = false;
+                                        }
+                                    }
+                                }
+
+
+                                var showlist = ""
+
+                                for (var j = 0; j < searchresult.length; j++) {
+                                    showlist += `<label class="weui-cell weui-cell_active weui-check__label ischecked2" for=${searchresult[j].familyBranchId} id="ischecked">
+                                 <div class="weui-cell__hd" >
+                                     <input type="checkbox" class="weui-check" name="checkbox1" id=${searchresult[j].familyBranchId} ${searchresult[j].iswhow ? "checked" : ""}>
+                                     <i class="weui-icon-checked"></i>
+                                 </div>
+                                 <div class="weui-cell__bd">
+                                     <p>${searchresult[j].branchName}</p>
+                                 </div>
+                                 <a  class="gotree" data-id=${searchresult[j].familyBranchId}    data-fid=${searchresult[j].familyId}>查看</a>
+                             </label>`
+
+                                }
+                                $("#grabble").empty();
+                                $("#grabble").append(
+                                    showlist
+                                );
+                                $('.gotree').on('click', function (event) {
+                                    event.stopPropagation();
+                                    var familyBranchId = this.dataset.id;
+                                    var familyIdF = this.dataset.fid;
+                                    window.location.href = 'my?familyBranchId=' + familyBranchId + '&familyId=' + familyIdF + '&body=none#tree'
+                                });
+                                $('.ischecked2').on('click', function () {
+                                    var isshow = $(this).children("div:first-child").children("input").is(':checked')
+                                    var index = $(this).index()
+                                    var familyBranchId = $(this).children("a").selector[0].dataset.id;
+                                    var childrenid = '#ischecked' + familyBranchId;
+                                    if (!isshow) { //判断是否为高亮isshow false为高亮  true  为 不高亮
+                                        $(this).children("div:first-child").children("input").attr('checked', 'true');
+                                        console.log($(this).children("a").selector[0].dataset.id)
+                                        var isExist = false;
+                                        for (var b = 0; b < list.length; b++) {
+                                            if (list[b].familyBranchId == familyBranchId) {
+                                                list[b].iswhow = true;
+                                                $(childrenid).children("input").attr('checked', 'true');
+                                                isExist = true
+                                            }
+                                        }
+                                        if (!isExist) {
+                                            searchresult[index].iswhow = true;
+                                            list.push(searchresult[index])
+                                            console.log(searchresult[index])
+                                            var html = `<label class="weui-cell weui-cell_active weui-check__label ischecked" for=${searchresult[index].familyBranchId} id="ischecked">
+                                 <div class="weui-cell__hd" id=ischecked${searchresult[index].familyBranchId}>
+                                     <input type="checkbox" class="weui-check" name="checkbox1" id=${searchresult[index].familyBranchId} ${searchresult[index].iswhow ? "checked" : ""}>
+                                     <i class="weui-icon-checked"></i>
+                                 </div>
+                                 <div class="weui-cell__bd">
+                                     <p>${searchresult[index].branchName}</p>
+                                 </div>
+                                 <a  class="gotree" data-id=${searchresult[index].familyBranchId}    data-fid=${searchresult[index].familyId}>查看</a>
+                             </label>`
+                                            $("#checkBoxsBranch").append(
+                                                html
+                                            );
+                                        }
+                                    } else {
+                                        $(this).children("div:first-child").children("input").removeAttr('checked');
+                                        // list[index].iswhow = false
+                                        console.log($(this).children("a").selector[0].dataset.id);
+                                        $(childrenid).children("input").removeAttr('checked');
+                                        for (var b = 0; b < list.length; b++) {
+                                            if (list[b].familyBranchId == familyBranchId) {
+                                                list[b].iswhow = false;
+                                                console.log(list[b])
+                                            }
+                                        }
+                                    }
+                                });
+                            } else {
+                                weui.topTips(data.message, 3000);
+                            }
+                        }
+                    });
+            }
+
+            //搜索分页
+            function renderSearchBranch(searchresult) {
+                var renderHtml = '';
+                for (var j = 0; j < searchresult.length; j++) {
+                    renderHtml += `<label class="weui-cell weui-cell_active weui-check__label ischecked" for=${searchresult[j].familyBranchId} id="ischecked">
+                                 <div class="weui-cell__hd" id=ischecked${searchresult[j].familyBranchId}>
+                                     <input type="checkbox" class="weui-check" name="checkbox1" id=${searchresult[j].familyBranchId} ${searchresult[j].iswhow ? "checked" : ""}>
+                                     <i class="weui-icon-checked"></i>
+                                 </div>
+                                 <div class="weui-cell__bd">
+                                     <p>${searchresult[j].branchName}</p>
+                                 </div>
+                                 <a  class="gotree" data-id=${searchresult[j].familyBranchId}    data-fid=${searchresult[j].familyId}>查看</a>
+                             </label>`
+                }
+                //console.log(renderHtml)
+                $("#checkBoxsBranch").append(renderHtml);
+            }
+
+
+            function show() {
+                var showlist = "";
+                for (var j = 0; j < arr.length; j++) {
+                    showlist += `<label class="weui-cell weui-cell_active weui-check__label ischecked" for=${arr[j].familyBranchId} id="ischecked">
+                                 <div class="weui-cell__hd" id=ischecked${arr[j].familyBranchId}>
+                                     <input type="checkbox" class="weui-check" name="checkbox1" id=${arr[j].familyBranchId} ${arr[j].iswhow ? "checked" : ""}>
+                                     <i class="weui-icon-checked"></i>
+                                 </div>
+                                 <div class="weui-cell__bd">
+                                     <p>${arr[j].branchName}</p>
+                                 </div>
+                                 <a  class="gotree" data-id=${arr[j].familyBranchId}    data-fid=${arr[j].familyId}>查看</a>
+                             </label>`
+
+                }
+                $("#checkBoxsBranch").append(
+                    showlist
+                );
+
+                $('.gotree').on('click', function (event) {
+                    event.stopPropagation();
+                    var familyBranchId = this.dataset.id;
+                    var familyIdF = this.dataset.fid;
+                    window.location.href = 'my?familyBranchId=' + familyBranchId + '&familyId=' + familyIdF + '&body=none#tree'
+                })
+                //点击打钩高亮
+                $('.ischecked').off().on('click', function () {
+                    var isshow = $(this).children("div:first-child").children("input").is(':checked')
+                    var index = $(this).index()
+                    console.log("打勾"+isshow,index);
+                    if (!isshow) { //判断是否为高亮isshow false为高亮  true  为 不高亮
+                        $(this).children("div:first-child").children("input").attr('checked', 'true');
+                        list[index].iswhow = true
+                    } else {
+                        $(this).children("div:first-child").children("input").removeAttr('checked')
+                        list[index].iswhow = false
+                    }
+                });
+            }
+
+            $('#showTooltips').on('click', function () {
+                var mergelist = []
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].iswhow) {
+                        mergelist.push(list[i].familyBranchId)
+                    }
+                }
+                if (mergelist.length >= 2) {
+                    console.log(mergelist)
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "mergeFamilyBranch",
+                            data: {familyBranchIdList: mergelist},
+                            //data: {familyBranchIdList:JSON.stringify(mergelist)},
+                            success: function (data) {
+                                if (data.statusCode == 200) {
+                                    page = 1;
+                                    $("#checkBoxsBranch").empty();
+                                    list = []
+                                    embranchment()
+                                    weui.toast("合并成功！", 1500)
+                                } else {
+                                    weui.topTips(data.message, 1500);
+                                }
+                            }
+                        });
+                } else {
+                    weui.topTips('合并分支选择必须大于2', 1500);
+                }
+            })
+            var $searchBar = $('#searchBar'),
+                $searchResult = $('#searchResult'),
+                $searchText = $('#searchText'),
+                $searchInput = $('#searchInput'),
+                $searchClear = $('#searchClear'),
+                $searchCancel = $('#searchCancel');
+
+            function hideSearchResult() {
+                $searchInput.val('');
+            }
+
+            function cancelSearch() {
+                hideSearchResult();
+                $searchBar.removeClass('weui-search-bar_focusing');
+            }
+
+            $searchText.on('click', function () {
+
+                $searchBar.addClass('weui-search-bar_focusing');
+                $searchInput.focus();
+            });
+            $searchInput.on('blur', function () {
+                if (!this.value.length) cancelSearch();
+            })
+            ;
+            $searchClear.on('click', function () {
+                // hideSearchResult();
+                $searchInput.focus()
+                $('#searchInput').val('');
+                pre_searchInput_val = '';
+                // inputcheng = ""
+                $('#checkBoxsBranch').empty();
+                show()
+            });
+            $searchCancel.on('click', function () {
+                $('#searchInput').val('');
+                $searchInput.blur();
+                cancelSearch();
+                $('#seek').hide();
+                $('#checkBoxsBranch').empty();
+                show();
+                //$('#checkBoxsBranch').show()
+            });
+            scrollBottomTest = function () {
+                $("#checkBoxsBranch1").scroll(function () {
+                    var $this = $(this),
+                        viewH = $this.height(),//可见高度   $("#contain")[0].clientHeight
+                        contentH = $this.get(0).scrollHeight,//内容高度
+                        scrollTop = $this.scrollTop();//滚动高度
+                    //if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
+                    if (scrollTop / (contentH - viewH) >= 0.95) { //到达底部100px时,加载新内容
+                        // console.log('现在百分比是： ', scrollTop/(contentH -viewH))
+                        $("#loading").css("display", "block");//显示 加载中图标
+                        console.log(page, pages)
+                        if (loading) return;
+                        loading = true;
+                        if (page <= pages) {//如果当前页小于总页面
+                            embranchment();
+                        } else {
+                            //$('.page').destroyInfinite();//到最后一页时，销毁它
+                            $("#loading>i").css("display", "none");
+                            $("#loading>span").html("到底啦~").css("color", "#BDBDBD");
+                        }
+                    }
+                });
+            }
+            scrollBottomTest()
+        });
+
+    </script>
+</div>
+</body>
+</html>

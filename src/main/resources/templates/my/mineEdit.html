@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="tpl_mineEdit">
+    <div class="page">
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell weui-cell_active">
+                <div class="weui-cell__bd">
+                    <!--<textarea class="weui-textarea" placeholder="请输入别名" rows="1"></textarea>-->
+                    <input   class="weui-input compellation " placeholder="请输入别名" type="text" />
+                </div>
+                <div class="weui-cell__ft xinmin" style="display: none;">
+                    <button class="weui-btn_reset weui-btn_icon">
+                        <i id="biemin" class="iconfont icon-icon-cross-empty"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="btn-m">
+                <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
+            </div>
+        </div>
+        <div id="toast" style="display: none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                 <!--<i class="weui-icon-success-no-circle weui-icon_toast"></i>-->
+                <!--<p class="weui-toast__content">姓名不能为空</p>-->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            // console.log(aa)
+            //这个是Js
+            var $toast = $("#toast")
+            var $weuitoast = $(".weui-toast"),
+                userName = personal_data.userName == null ? "" : personal_data.userName
+            var  isshowbtn = false
+
+            $('.compellation').val(personal_data.userName)
+            //  调用弹出提示用户
+            function popup(content){
+                $weuitoast.html(content)
+                $toast.fadeIn(100);
+                setTimeout(function () {
+                    $toast.fadeOut(100);
+                }, 2000);
+            }
+
+
+            if($('.compellation').val()){
+                $('#showTooltips').removeClass('weui-btn_disabled');
+                $('.xinmin').show();
+                isshowbtn = true
+            }
+            $('.compellation').on('input', function () {
+                if ($('.compellation').val()) {
+                    $('#showTooltips').removeClass('weui-btn_disabled');
+                    $('.xinmin').show();
+                    isshowbtn = true
+                } else {
+                    $('#showTooltips').addClass('weui-btn_disabled');
+                    $('.xinmin').hide();
+                    isshowbtn = false
+                }
+            });
+            $('#biemin').on('click',function () {
+                $('.compellation').val('');
+                $('.xinmin').hide();
+                $('#showTooltips').addClass('weui-btn_disabled');
+                isshowbtn = false
+            })
+
+
+            $('#showTooltips').on('click',function () {
+                if( !isshowbtn) return
+                var userName = $('.compellation').val()
+               if (userName == "") {
+                   var content = `<p class="weui-toast__content">姓名不能为空</p>`
+                   popup(content)
+               }else{
+                   var content = `<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+                <p class="weui-toast__content">修改成功</p>`
+                   ajaxPost(
+                       {
+                           type: "POST",
+                           url: "modifyMyInfo",
+                           data: {memberId: personal_data.memberId, userName: userName},
+                           success: function (data) {
+
+                               if (data.statusCode == 200) {
+                                   console.log(data.statusCode )
+                                   popup(content)
+                                   personal_data.userName = userName
+                                   setTimeout(function(){
+                                       $('#mineEdit .weui-cell__ft').text(userName)
+
+                                       $('#otherName .userName').text(userName)
+                                       // window.location.href = 'my#mineList';
+                                       history.go(-1)
+                                   }, 1500);
+
+                               } else {
+                                   weui.topTips(data.message, 3000);
+                               }
+                           }
+                       });
+
+
+
+               }
+            })
+        });
+    </script>
+</div>
+
+</body>
+</html>

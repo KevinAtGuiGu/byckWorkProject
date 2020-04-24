@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 开始我的页面 -->
+<div th:fragment="tpl_home">
+    <div class="page">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-tab__panel">
+                    <div class="weui-panel">
+                        <div class="weui-panel__bd">
+                            <div class="weui-media-box weui-media-box_small-appmsg">
+                                <div class="weui-cells" id="getMyInfo">
+                                    <!--<a class="weui-cell weui-cell_active weui-cell_access" href="my#mineList">-->
+                                    <!--<div class="weui-cell__hd" style="position: relative;margin-right: 10px;">-->
+                                        <!--<img id="headImageUrl"  th:if="${session.user.memberBasicInfoEntity.headThumb}"   th:src="${session.user.memberBasicInfoEntity.headThumb}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" style="width: 50px;display: block;height:auto"/>-->
+                                        <!--<div class="isimg" th:if="${ session.user.memberBasicInfoEntity.headThumb==''}"> 暂无头像</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="weui-cell__bd" id="otherName">-->
+                                        <!--&lt;!&ndash;<p th:text="${session.user.memberBasicInfoEntity.userName}">田红1</p>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<p style="font-size: 13px;color: #888888;">家族号:<span th:text="${session.user.familyCode}"></span></p>&ndash;&gt;-->
+                                    <!--</div>-->
+                                    <!--<div class="weui-cell__ft">-->
+
+                                    <!--</div>-->
+                                <!--</a>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="adminList" >
+                        <div class="weui-panel__bd">
+                            <div class="weui-media-box weui-media-box_small-appmsg">
+                                <div class="weui-flex" id="jurisdiction" th:if="${session.user.userRole == '超级管理员'|| session.user.userRole == '分支管理员'}">
+                                    <a href="my#hereditary" class="weui-flex__item" th:if="${session.user.userRole == '超级管理员'}">
+                                        <div class="icon">
+                                            <span class="iconfont icon-ziyuan"></span>
+                                        </div>
+                                        <p>世袭设置</p>
+                                    </a>
+                                    <a href="my#branch" class="weui-flex__item" th:if="${session.user.userRole == '超级管理员'|| session.user.userRole == '分支管理员'}">
+                                        <div class="weui-flex__item">
+                                            <div class="icon">
+                                                <span class="iconfont icon-fenzhijigou"></span>
+                                            </div>
+                                            <p>分支管理</p>
+                                        </div>
+                                    </a>
+                                    <a href="my#Approval"  class="weui-flex__item" th:if="${session.user.userRole == '超级管理员'|| session.user.userRole == '分支管理员'}">
+                                        <div class="weui-flex__item">
+                                            <div class="icon">
+                                                <span class="iconfont icon-shenpi"></span>
+                                            </div>
+                                            <p>我的审批</p>
+                                        </div>
+                                    </a>
+                                    <a href="my#merge"  class="weui-flex__item" th:if="${session.user.userRole == '超级管理员'}">
+                                        <div class="weui-flex__item">
+                                            <div class="icon">
+                                                <span class="iconfont icon-hebing"></span>
+                                            </div>
+                                            <p>分支合并</p>
+                                        </div>
+
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weui-panel">
+                        <div class="weui-panel__bd">
+                            <div class="weui-media-box weui-media-box_small-appmsg">
+                                <div class="weui-cells">
+<!--                                    <a class="weui-cell  weui-cell_access" href="index">-->
+<!--                                        <div class="weui-cell__hd icon-p">-->
+<!--                                            <span class="iconfont icon-jiazu"></span>-->
+<!--                                        </div>-->
+<!--                                        <div class="weui-cell__bd">-->
+<!--                                            <p>我的家族</p>-->
+<!--                                        </div>-->
+<!--                                        <div class="weui-cell__ft"></div>-->
+<!--                                    </a>-->
+                                    <a class="weui-cell  weui-cell_access" href="index">
+                                        <div class="weui-cell__hd icon-p">
+                                            <span class="iconfont icon-xiangce"></span>
+                                        </div>
+                                        <div class="weui-cell__bd">
+                                            <p>家族相册</p>
+                                        </div>
+                                        <div class="weui-cell__ft"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weui-panel">
+                        <div class="weui-panel__bd">
+                            <div class="weui-media-box weui-media-box_small-appmsg">
+                                <div class="weui-cells">
+                                    <a class="weui-cell  weui-cell_access" href="index">
+                                        <div class="weui-cell__hd icon-p">
+                                            <span class="iconfont icon-gonggao"></span>
+                                        </div>
+                                        <div class="weui-cell__bd">
+                                            <p>公告</p>
+                                        </div>
+                                        <div class="weui-cell__ft"></div>
+                                    </a>
+                                    <!--<a class="weui-cell  weui-cell_access" href="my#admin">-->
+                                        <!--<div class="weui-cell__hd icon-p">-->
+                                            <!--<span class="iconfont icon-nav_user"></span>-->
+                                        <!--</div>-->
+                                        <!--<div class="weui-cell__bd">-->
+                                            <!--<p>管理员</p>-->
+                                        <!--</div>-->
+                                        <!--<div class="weui-cell__ft"></div>-->
+                                    <!--</a>-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="weui-panel ">
+                        <div class="weui-panel__bd">
+                            <div class="weui-media-box weui-media-box_small-appmsg">
+                                <div class="weui-cells">
+                                    <a class="weui-cell  weui-cell_access" href="index">
+                                        <div class="weui-cell__hd icon-p">
+                                            <span class="iconfont icon-bangzhu"></span>
+                                        </div>
+                                        <div class="weui-cell__bd">
+                                            <p>帮助</p>
+                                        </div>
+                                        <div class="weui-cell__ft"></div>
+                                    </a>
+                                    <a class="weui-cell  weui-cell_access" href="index">
+                                        <div class="weui-cell__hd icon-p">
+                                            <span class="iconfont icon-guanyuwomen"></span>
+                                        </div>
+                                        <div class="weui-cell__bd">
+                                            <p>关于</p>
+                                        </div>
+                                        <div class="weui-cell__ft"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weui-panel" id="showDialog">
+                        <div class="weui-panel__bd">
+                            <div class="weui-media-box weui-media-box_small-appmsg">
+                                <div class="weui-cells">
+                                    <a class="weui-cell  weui-cell_access">
+                                        <!--<div class="weui-cell__hd icon-p">-->
+                                            <!--<span class="iconfont icon-shezhi"></span>-->
+                                        <!--</div>-->
+                                        <div class="weui-cell__bd f-j" >
+                                            <p>退出登录</p>
+                                        </div>
+                                        <!--<div class="weui-cell__ft"></div>-->
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="dialogs1">
+                    <!--BEGIN dialog1-->
+                    <div class="js_dialog" id="Dialog" style="display: none;">
+                        <div class="weui-mask"></div>
+                        <div class="weui-dialog">
+                            <div class="weui-dialog__hd"><strong class="weui-dialog__title">退出账号</strong></div>
+                            <div class="weui-dialog__bd">是否退出登录状态？</div>
+                            <div class="weui-dialog__ft">
+                                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default quxiao">取消</a>
+                                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary quedin">确定</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-tabbar">
+                    <a href="home" class="weui-tabbar__item">
+                    <span style="display: inline-block;position: relative;">
+                        <!-- <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon"> -->
+                        <span class="iconfont icon-shouye"></span>
+                        <!--<span class="weui-badge" style="position: absolute;top: -2px;right: -13px;">8</span>-->
+                    </span>
+                        <p class="weui-tabbar__label">族谱</p>
+                    </a>
+                    <a href="javascript:;" class="weui-tabbar__item">
+                        <!-- <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon"> -->
+                        <span class="iconfont icon-faxian tab-icon"></span>
+                        <p class="weui-tabbar__label">发现</p>
+                    </a>
+                    <a href="javascript:" class="weui-tabbar__item weui-bar__item_on">
+                    <span style="display: inline-block;position: relative;">
+                        <!-- <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon"> -->
+                        <span class="iconfont icon-wode tab-icon"></span>
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                        <p class="weui-tabbar__label">我的</p>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+            var personal_data = {}
+
+            $(function(){
+                var $iosDialog1 = $('#Dialog'),
+                    $androidDialog1 = $('#Dialog1')
+
+                $('#showDialog').on('click', function(){
+                    $iosDialog1.fadeIn(200);
+                });
+                $('#dialogs1').on('click', '.quxiao', function(){
+                    $(this).parents('.js_dialog').fadeOut(200);
+                });
+                //确定退出登录
+                $('#dialogs1').on('click', '.quedin', function(){
+                    $(this).parents('.js_dialog').fadeOut(200);
+                    weui.toast("已退出登录！",1500)
+                    setTimeout(function () {
+                        location.href='login'
+                    }, 500);
+                    ajaxPost(
+                        {
+                            type: "POST",
+                            url: "logout",
+                            success: function (data) {
+                            }
+                        }
+                    );
+                });
+                console.log($('#jurisdiction a:nth-child(2)'))
+                if(false){
+                    $('#jurisdiction a:nth-child(3)').hide()
+                }else if (false) {
+                    $('#jurisdiction ').hide()
+                }
+
+            console.log('111')
+            // $('.weui-tabbar__item').on('click', function () {
+            //     $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+            // });
+            var loading1 = weui.loading("加载中..");
+            ajaxPost(
+                {
+                    type: "GET",
+                    url: "getMyInfo",
+                    success: function (data) {
+                        loading1.hide();
+                        console.log(data)
+                            if (data.statusCode == 200) {
+                                personal_data = data.data
+                                console.log($('#headImageUrl'))
+                            //     if(data.data.headImageUrl) {
+                            //         $('#headImageUrl').attr('src',data.data.headImageUrl)
+                            //     }
+                                var html = `<a class="weui-cell weui-cell_active weui-cell_access" href="my#mineList">
+                                    <div class="weui-cell__hd" style="position: relative;margin-right: 10px;" id="otherName">
+                                        ${personal_data.headImageUrl?'<img  src="'+personal_data.headImageUrl+'" class="profilepicture picture" />':''}
+                        <div    ${personal_data.headImageUrl? 'class="isshowphotograph"' : 'class="isimg"'}>
+                            暂无头像</div>
+                                    </div>
+                                    <div class="weui-cell__bd" >
+                                        <p class="userName">${data.data.userName}</p>
+                                        <p style="font-size: 13px;color: #888888;">家族号:${data.data.familyCode == null? "" : data.data.familyCode}</p>
+                                    </div>
+                                    <div class="weui-cell__ft">
+
+                                    </div>
+                                </a>`
+                            $('#getMyInfo').html(html)
+                            } else {
+                                weui.topTips(data.message, 3000);
+                            }
+                    }
+                });
+        });
+    </script>
+    </div>
+
+</div>
+</body>
+</html>
+

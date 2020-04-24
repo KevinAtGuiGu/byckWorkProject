@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base th:href="${#request.getContextPath()}+'/'">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="assets/css/iconfont.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+  <title>紫荆堂-田氏族谱</title>
+  <link rel="stylesheet" href="assets/css/weui.css" />
+  <link rel="stylesheet" href="assets/css/example.css" />
+  <link rel="stylesheet" href="assets/css/lst-style.css" />
+  <link rel="stylesheet" href="font/iconfont.css">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<!-- 注册流程单页面 -->
+<body ontouchstart>
+  <div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
+  <div class="container" id="container"></div>
+  <!-- 开始用户注册页面 -->
+  <script type="text/html" id="tpl_home" th:include="auth/register::tpl_home"></script>
+  <!-- 开始用户注册页面END -->
+  <!-- 开始新用户族谱页面 -->
+  <script type="text/html" id="tpl_searchFamilyBranch" th:include="auth/searchFamilyBranchPage::tpl_searchFamilyBranch"></script>
+  <!-- 新用户族谱页面END -->
+  <!-- 开始搜索结果页面 -->
+  <script type="text/html" id="tpl_search_results" th:include="auth/searchFamilyBranchResults::tpl_search_results"></script>
+  <!-- 搜索结果页面END -->
+
+  <!-- 开始新增分支族谱页面 -->
+  <script type="text/html" id="tpl_addFamilyBranch" th:include="auth/addFamilyBranch::tpl_addFamilyBranch"></script>
+
+  <!-- 开始操作成功页面 -->
+  <script type="text/html" id="tpl_successPage" th:include="auth/successPage::tpl_successPage"></script>
+
+  <!-- 开始操作失败页面 -->
+  <script type="text/html" id="tpl_warnPage" th:include="auth/warnPage::tpl_warnPage"></script>
+
+  <!-- 开始填写基本信息页面 -->
+  <script type="text/html" id="tpl_completeInfo" th:include="auth/completeInfo::tpl_completeInfo"></script>
+
+  <script src="assets/js/zepto.min.js"></script>
+  <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+  <script src="https://res.wx.qq.com/open/libs/weuijs/1.2.1/weui.min.js"></script>
+  <script src="assets/js/example.js"></script>
+  <script src="assets/js/familytree.js"></script>
+  <script src="assets/js/city.js"></script>
+  <script src="assets/js/jquery-weui.js"></script>
+</body>
+
+</html>

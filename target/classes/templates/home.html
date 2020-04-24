@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base th:href="${#request.getContextPath()}+'/'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>紫荆堂-田氏族谱</title>
+    <link rel="stylesheet" href="assets/css/weui.min.css" />
+    <link rel="stylesheet" href="assets/css/example.css" />
+    <link rel="stylesheet" href="assets/css/lst-style.css" />
+    <link rel="stylesheet" href="font/iconfont.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/jsmind.css" />
+</head>
+<body ontouchstart>
+<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
+<div class="container" id="container"></div>
+<!-- 开始首页面 -->
+<script type="text/html" id="tpl_home" th:include="home/home::tpl_home"></script>
+<!-- 开始首页面 -->
+<!-- 开始资料页面 -->
+<script type="text/html" id="tpl_form" th:include="home/form::tpl_form"></script>
+<!-- 资料页面 -->
+
+<script src="assets/js/zepto.min.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.2.1/weui.min.js"></script>
+<script src="assets/js/example.js"></script>
+<script src="assets/js/familytree.js"></script>
+<script type="text/javascript" src="assets/js/jsmind.js"></script>
+</body>
+</html>
